@@ -1,0 +1,240 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>The Music Atlas | Discover Music</title>
+
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+
+  <!-- ========================================
+       NAVIGATION
+  ========================================= -->
+
+  <header class="site-header">
+
+    <nav class="navigation" aria-label="Main navigation">
+
+      <a href="#home" class="brand" id="home-link">
+        THE MUSIC ATLAS<span>.</span>
+      </a>
+
+      <div class="search-group">
+
+        <form
+          class="nav-search"
+          id="search-form"
+          role="search"
+        >
+
+          <svg
+            class="search-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle cx="10.8" cy="10.8" r="7"></circle>
+            <path d="m16 16 5 5"></path>
+          </svg>
+
+          <label class="sr-only" for="artist-search">
+            Search an artist
+          </label>
+
+          <input
+            type="search"
+            id="artist-search"
+            placeholder="Search an artist"
+            autocomplete="off"
+            required
+          >
+
+          <button
+            type="submit"
+            aria-label="Submit artist search"
+          >
+            <span aria-hidden="true">→</span>
+          </button>
+
+        </form>
+
+        <span class="search-caption">
+          Follow your curiosity
+        </span>
+
+      </div>
+
+    </nav>
+
+  </header>
+
+
+  <!-- ========================================
+       ORIGINAL BLUE WATER RIPPLE
+  ========================================= -->
+
+  <div
+    class="loading-screen"
+    id="loading-screen"
+    role="status"
+    aria-label="Loading artist information"
+    hidden
+  >
+
+    <div class="water-ripple" aria-hidden="true">
+      <span class="ripple-ring"></span>
+      <span class="ripple-ring"></span>
+      <span class="ripple-ring"></span>
+      <span class="ripple-ring"></span>
+      <span class="ripple-center"></span>
+    </div>
+
+  </div>
+
+
+  <!-- ========================================
+       MAIN CONTENT
+  ========================================= -->
+
+  <main id="home">
+
+    <!-- HERO -->
+
+    <section
+      class="hero"
+      aria-labelledby="hero-title"
+    >
+
+      <div class="hero-content">
+
+        <h1 id="hero-title">
+          Good music leads somewhere
+        </h1>
+
+        <p>
+          Explore the artists, influences, and connections
+          behind the music you love.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================
+         FEATURED ARTISTS
+    ========================================= -->
+
+    <section
+      class="featured-artists"
+      aria-labelledby="featured-title"
+    >
+
+      <div class="featured-container">
+
+        <div class="featured-heading">
+
+          <h2 id="featured-title">
+            A little inspiration.
+          </h2>
+
+        </div>
+
+
+        <!-- ARTIST GRID -->
+
+        <div
+          class="artist-grid"
+          id="artist-grid"
+          aria-live="polite"
+        ></div>
+
+
+        <!-- EXPLORE ANOTHER SIX -->
+
+       
+<!-- ========================================
+     CIRCULAR RESHUFFLE BUTTON
+========================================= -->
+
+
+
+<div class="featured-footer">
+
+  <button
+    class="refresh-artists"
+    id="refresh-artists"
+    type="button"
+    aria-label="Reshuffle artists"
+  >
+
+    <svg
+      class="reshuffle-art"
+      viewBox="0 0 120 120"
+      aria-hidden="true"
+    >
+
+      <defs>
+        <path
+          id="reshuffle-top"
+          d="M 18,60 A 42,42 0 0,1 102,60"
+        />
+
+        <path
+          id="reshuffle-bottom"
+          d="M 18,60 A 42,42 0 0,0 102,60"
+        />
+      </defs>
+
+      <circle
+        class="reshuffle-border"
+        cx="60"
+        cy="60"
+        r="58"
+      />
+
+      <g class="reshuffle-lettering">
+
+        <text text-anchor="middle">
+          <textPath
+            href="#reshuffle-top"
+            startOffset="50%"
+          >RESHUFFLE</textPath>
+        </text>
+
+        <text text-anchor="middle">
+          <textPath
+            href="#reshuffle-bottom"
+            startOffset="50%"
+          >RESHUFFLE</textPath>
+        </text>
+
+      </g>
+
+      <circle
+        class="reshuffle-center"
+        cx="60"
+        cy="60"
+        r="2.5"
+      />
+
+    </svg>
+
+  </button>
+
+</div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</body>
+</html>
