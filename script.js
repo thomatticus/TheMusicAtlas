@@ -3,7 +3,6 @@
 
 /* ==========================================
    THE MUSIC ATLAS
-   COMPLETE SCRIPT.JS
 ========================================== */
 
 
@@ -123,36 +122,15 @@ const MIN_IMAGE_SIZE = 400;
 const IMAGE_SAMPLE_SIZE = 48;
 const IMAGE_TIMEOUT = 9000;
 
-/*
-  Artist cards are temporarily
-  non-interactive.
-
-  Later, set this to true when
-  Connections pages are dynamic.
-*/
-
-const CONNECTIONS_ENABLED = false;
-
-/*
-  Search quality setting.
-
-  Related artist names need at least
-  this many Deezer fans.
-
-  Exact name matches are exempt.
-*/
-
 const MIN_RELATED_ARTIST_FANS = 1000;
 
-/*
-  Optional manually verified photos.
-*/
+const CONNECTIONS_ENABLED = false;
 
 const imageOverrides = {};
 
 
 /* ==========================================
-   ARTIST NAME ALIASES
+   ARTIST ALIASES
 ========================================== */
 
 const artistRules = {
@@ -220,17 +198,6 @@ const artistRules = {
 /* ==========================================
    SEARCH EXCLUSION RULES
 ========================================== */
-
-/*
-  Remove obvious tribute projects,
-  karaoke acts, meditation recordings,
-  and similar search clutter.
-
-  These rules are intentionally
-  conservative. They do not guarantee
-  that every remaining result is a
-  genuine recording artist.
-*/
 
 const excludedSearchPatterns = [
   /\btributes?\b/i,
@@ -1242,6 +1209,7 @@ async function discoverArtists() {
 function scoreArtist(artist, query) {
   const name = normalizeName(artist.name);
   const term = normalizeName(query);
+
   const fans = Number(artist.nb_fan || 0);
 
   let relevance = 0;
@@ -1279,24 +1247,22 @@ function isCredibleSearchResult(
   }
 
   /*
-    Exact matches remain eligible,
-    even with low fan counts.
+    Exact matches are eligible,
+    regardless of fan count.
   */
 
   if (name === term) {
     return true;
   }
 
-  const fans =
-    Number(artist.nb_fan || 0);
-
-  return fans >= MIN_RELATED_ARTIST_FANS;
+  return Number(artist.nb_fan || 0) >=
+    MIN_RELATED_ARTIST_FANS;
 }
 
 
 /* ==========================================
    WORLDWIDE ARTIST SEARCH
-   CLEAN + DEDUPLICATED
+   CLEAN, DEDUPLICATED, EXACT-FIRST
 ========================================== */
 
 async function findWorldwideArtists(query) {
@@ -1342,12 +1308,6 @@ async function findWorldwideArtists(query) {
         );
       }
 
-      /*
-        Different Deezer IDs with
-        identical artist names are
-        grouped together.
-      */
-
       candidatesByName
         .get(nameKey)
         .set(artist.id, artist);
@@ -1361,8 +1321,8 @@ async function findWorldwideArtists(query) {
   }
 
   /*
-    Rank entries within each
-    unique-name group by popularity.
+    Rank duplicate Deezer entries
+    within each unique artist name.
   */
 
   const groups = [
@@ -1386,27 +1346,30 @@ async function findWorldwideArtists(query) {
     };
   });
 
-  /*
-    Exact matches appear first.
-    Related artist names follow.
-  */
-
   groups.sort(
     (a, b) => b.score - a.score
   );
 
+  const queryWords = query
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  const exactGroups = groups.filter(
+    group =>
+      normalizeName(group.name) ===
+      normalizeName(query)
+  );
+
+  const eligibleGroups =
+    queryWords.length > 1 &&
+    exactGroups.length > 0
+      ? exactGroups
+      : groups;
+
   const selected = [];
 
-  /*
-    Each unique artist name gets
-    at most one card.
-
-    If an entry's image is unusable,
-    try another Deezer entry with
-    the same name.
-  */
-
-  for (const group of groups) {
+  for (const group of eligibleGroups) {
     if (selected.length >= SEARCH_LIMIT) {
       break;
     }
@@ -1490,8 +1453,8 @@ async function searchArtists(query) {
     );
 
     /*
-      Fallback to curated artists
-      if Deezer is unavailable.
+      Fall back to curated artists
+      when Deezer search fails.
     */
 
     const matches =
