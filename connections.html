@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Discover — The Music Atlas</title>
+
+  <link rel="stylesheet" href="connections.css">
+  <script src="connections.js" defer></script>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <nav class="navigation" aria-label="Main navigation">
+
+      <a href="index.html" class="brand">
+        THE MUSIC ATLAS<span>.</span>
+      </a>
+
+      <div class="search-group">
+
+        <form
+          class="nav-search"
+          id="discovery-search"
+          role="search"
+        >
+
+          <svg
+            class="search-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle cx="10.8" cy="10.8" r="7"></circle>
+            <path d="m16 16 5 5"></path>
+          </svg>
+
+          <label class="sr-only" for="artist-search">
+            Search an artist
+          </label>
+
+          <input
+            type="search"
+            id="artist-search"
+            placeholder="Search an artist"
+            autocomplete="off"
+            required
+          >
+
+          <button
+            type="submit"
+            aria-label="Submit artist search"
+          >
+            →
+          </button>
+
+        </form>
+
+        <span class="search-caption">
+          FOLLOW YOUR CURIOSITY
+        </span>
+
+      </div>
+
+    </nav>
+  </header>
+
+  <main class="discovery">
+
+    <div class="discovery-layout">
+
+      <!-- ARTIST PROFILE -->
+
+      <section
+        class="artist-intro"
+        aria-labelledby="artist-name"
+      >
+
+        <div class="portrait-frame">
+
+          <div
+            class="portrait-fallback"
+            id="portrait-fallback"
+          >
+            THE MUSIC<br>ATLAS<span>.</span>
+          </div>
+
+          <img
+            id="artist-photo"
+            alt=""
+            hidden
+          >
+
+        </div>
+
+        <div class="artist-copy">
+
+          <p class="eyebrow" id="artist-genre"></p>
+
+          <h1 id="artist-name"></h1>
+
+          <p class="artist-bio" id="artist-bio"></p>
+
+        </div>
+
+      </section>
+
+      <!-- DISCOVERY CONTENT -->
+
+      <div class="discovery-content">
+
+        <section
+          class="albums-section"
+          aria-labelledby="albums-heading"
+        >
+
+          <div class="section-header">
+            <h2 id="albums-heading">
+              Three essential albums<span class="blue-dot">.</span>
+            </h2>
+          </div>
+
+          <div class="albums-grid" id="albums"></div>
+
+        </section>
+
+        <section
+          class="connections-section"
+          aria-labelledby="connections-heading"
+        >
+
+          <div class="section-header">
+            <h2 id="connections-heading">
+              Follow the sound<span class="blue-dot">.</span>
+            </h2>
+          </div>
+
+          <div
+            class="connections-grid"
+            id="connections-grid"
+          ></div>
+
+        </section>
+
+      </div>
+
+    </div>
+
+    <!-- DISCOVERY TRAIL -->
+
+    <footer class="discovery-footer">
+
+      <span class="eyebrow">
+        YOUR DISCOVERY TRAIL
+      </span>
+
+      <nav
+        class="discovery-trail"
+        id="discovery-trail"
+        aria-label="Discovery trail"
+      ></nav>
+
+      <button
+        type="button"
+        id="reset-trail"
+        class="reset-trail"
+      >
+        Start over
+      </button>
+
+    </footer>
+
+  </main>
+
+</body>
+</html>

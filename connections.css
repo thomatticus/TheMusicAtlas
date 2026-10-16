@@ -1,0 +1,868 @@
+/* ==========================================
+   THE MUSIC ATLAS
+   CONNECTIONS.CSS
+========================================== */
+
+:root {
+  --color-background: #f7f5f0;
+  --color-surface: #ffffff;
+  --color-search-background: #edeae4;
+  --color-text: #292522;
+  --color-text-muted: #625f5a;
+  --color-placeholder: #8a8279;
+  --color-accent: #287fa0;
+  --color-icon: #756e67;
+  --color-border: #e8e3da;
+  --color-border-focus: #cbbdb2;
+  --color-ripple: #648b9b;
+  --color-ripple-center: #729baa;
+}
+
+/* ==========================================
+   GLOBAL — ORIGINAL HOMEPAGE RULES
+========================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* ==========================================
+   NAVIGATION — ORIGINAL HOMEPAGE RULES
+========================================== */
+
+.site-header {
+  flex-shrink: 0;
+  background: var(--color-background);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.navigation {
+  width: min(1400px, calc(100% - 64px));
+  min-height: 94px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brand {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--color-text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brand span {
+  color: var(--color-accent);
+}
+
+/* ==========================================
+   SEARCH — ORIGINAL HOMEPAGE RULES
+   NO EXTRA ARROW STYLING
+========================================== */
+
+.search-group {
+  width: 250px;
+  flex-shrink: 0;
+}
+
+.nav-search {
+  width: 100%;
+  height: 42px;
+  padding: 0 13px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--color-search-background);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.nav-search:focus-within {
+  background: var(--color-surface);
+  border-color: var(--color-border-focus);
+}
+
+.search-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: var(--color-icon);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.nav-search input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text);
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+}
+
+.nav-search input::placeholder {
+  color: var(--color-placeholder);
+}
+
+.nav-search button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-icon);
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.nav-search button:hover {
+  color: var(--color-accent);
+}
+
+.search-caption {
+  display: block;
+  margin-top: 8px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==========================================
+   DISCOVERY — SINGLE SCREEN
+========================================== */
+
+.discovery {
+  width: min(1400px, calc(100% - 64px));
+  min-height: calc(100dvh - 95px);
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.discovery-layout {
+  flex: 1;
+  min-height: 0;
+
+  display: grid;
+  grid-template-columns:
+    minmax(290px, 315px)
+    minmax(0, 1fr);
+
+  column-gap: clamp(48px, 5vw, 76px);
+
+  padding: 28px 0 24px;
+}
+
+.artist-intro,
+.discovery-content {
+  min-width: 0;
+}
+
+/* ==========================================
+   ARTIST PORTRAIT
+========================================== */
+
+.artist-intro {
+  display: flex;
+  flex-direction: column;
+}
+
+.portrait-frame {
+  position: relative;
+
+  width: 100%;
+  max-width: 315px;
+  aspect-ratio: 1 / 1;
+
+  overflow: hidden;
+  background: #e8e4dc;
+}
+
+.portrait-frame img {
+  position: absolute;
+  inset: 0;
+
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+.portrait-fallback {
+  position: absolute;
+  inset: 0;
+
+  display: grid;
+  place-content: center;
+
+  color: #aaa49d;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -1.5px;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.portrait-fallback span {
+  color: var(--color-accent);
+}
+
+/* ==========================================
+   ARTIST INFORMATION
+========================================== */
+
+.artist-copy {
+  min-width: 0;
+}
+
+.eyebrow {
+  margin: 0;
+
+  color: #88817a;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  line-height: 1.4;
+}
+
+.artist-copy > .eyebrow {
+  margin-top: 22px;
+}
+
+#artist-name {
+  margin: 9px 0 8px;
+
+  font-size: clamp(40px, 3.7vw, 54px);
+  font-weight: 400;
+  letter-spacing: -1.8px;
+  line-height: 1.06;
+}
+
+.artist-era {
+  margin: 0;
+  color: #8c857d;
+  font-size: 12px;
+}
+
+.artist-bio {
+  max-width: 315px;
+  margin: 23px 0 0;
+
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+/* ==========================================
+   RIGHT SIDE
+   USE THE AVAILABLE HEIGHT
+========================================== */
+
+.discovery-content {
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  gap: 38px;
+}
+
+/* ==========================================
+   SECTION HEADINGS
+========================================== */
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 24px;
+}
+
+.section-header h2 {
+  margin: 0;
+
+  font-size: clamp(24px, 2.2vw, 30px);
+  font-weight: 400;
+  letter-spacing: -0.9px;
+  line-height: 1.15;
+}
+
+.blue-dot {
+  color: var(--color-accent);
+}
+
+/* ==========================================
+   ESSENTIAL ALBUMS
+========================================== */
+
+.albums-section {
+  width: 100%;
+}
+
+.albums-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 2.3vw, 34px);
+}
+
+.album {
+  min-width: 0;
+}
+
+.album-art {
+  position: relative;
+
+  width: 100%;
+  max-width: 225px;
+  aspect-ratio: 1 / 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+  background: #e8e4dc;
+}
+
+.album-art img {
+  position: absolute;
+  inset: 0;
+
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.album-fallback {
+  padding: 12px;
+  color: #9b948d;
+  font-size: 12px;
+  text-align: center;
+}
+
+.album-title {
+  margin: 12px 0 4px;
+
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.album-year {
+  color: var(--color-accent);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.album-description {
+  margin: 0;
+
+  color: #88817a;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* ==========================================
+   FOLLOW THE SOUND
+========================================== */
+
+.connections-section {
+  width: 100%;
+
+  border-top: 1px solid var(--color-border);
+  padding-top: 24px;
+}
+
+.connections-section .section-header {
+  margin-bottom: 32px;
+}
+
+.connections-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 2.3vw, 34px);
+}
+
+.connection-group {
+  min-width: 0;
+}
+
+.group-title {
+  min-height: 44px;
+  margin: 0 0 12px;
+
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.35px;
+  line-height: 1.3;
+}
+
+/* ==========================================
+   CONNECTION ENTRIES
+========================================== */
+
+.connection {
+  display: block;
+  width: 100%;
+
+  padding: 13px 0;
+
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  background: transparent;
+
+  color: inherit;
+  font-family: Helvetica, Arial, sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+
+.connection-name {
+  display: block;
+
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.connection-reason {
+  display: block;
+  margin-top: 6px;
+
+  color: #8a837c;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.connection:hover .connection-name,
+.trail-step:hover,
+.reset-trail:hover {
+  color: var(--color-accent);
+}
+
+.empty-connections {
+  color: #918a83;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ==========================================
+   DISCOVERY TRAIL
+========================================== */
+
+.discovery-footer {
+  min-height: 54px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  border-top: 1px solid var(--color-border);
+  padding: 12px 0;
+}
+
+.discovery-footer > .eyebrow {
+  white-space: nowrap;
+}
+
+.discovery-trail {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.trail-step,
+.reset-trail {
+  padding: 0;
+  border: 0;
+  background: transparent;
+
+  color: #88817a;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.trail-step[aria-current="page"] {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.trail-separator {
+  color: #b3aca4;
+}
+
+.connection:focus-visible,
+.trail-step:focus-visible,
+.reset-trail:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+/* ==========================================
+   DESKTOP HEIGHT MANAGEMENT
+
+   Keep the artwork large on normal desktops.
+   On genuinely short windows, allow scrolling
+   instead of cutting off artist connections.
+========================================== */
+
+@media (min-width: 901px) and (min-height: 850px) {
+  .discovery {
+    height: calc(100dvh - 95px);
+  }
+}
+
+@media (min-width: 901px) and (max-height: 849px) {
+  .discovery-layout {
+    padding-top: 20px;
+    padding-bottom: 18px;
+  }
+
+  .discovery-content {
+    gap: 28px;
+  }
+
+  .connections-section {
+    padding-top: 18px;
+  }
+
+  .connections-section .section-header {
+    margin-bottom: 22px;
+  }
+
+  .group-title {
+    margin-bottom: 8px;
+  }
+
+  .connection {
+    padding: 9px 0;
+  }
+}
+
+/* ==========================================
+   TABLET
+========================================== */
+
+@media (max-width: 900px) {
+  .discovery-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .artist-intro {
+    display: grid;
+    grid-template-columns:
+      minmax(180px, 260px)
+      minmax(0, 1fr);
+
+    gap: 28px;
+    align-items: center;
+  }
+
+  .portrait-frame {
+    max-width: 260px;
+  }
+
+  .artist-copy > .eyebrow {
+    margin-top: 0;
+  }
+
+  .discovery-content {
+    gap: 44px;
+  }
+
+  .album-art {
+    max-width: none;
+  }
+}
+
+/* ==========================================
+   MOBILE
+   HOMEPAGE NAVIGATION VALUES PRESERVED
+========================================== */
+
+@media (max-width: 600px) {
+  .navigation {
+    width: calc(100% - 36px);
+    min-height: 86px;
+    gap: 12px;
+  }
+
+  .brand {
+    font-size: 15px;
+  }
+
+  .search-group {
+    width: 180px;
+  }
+
+  .search-caption {
+    font-size: 9px;
+    letter-spacing: 0.5px;
+  }
+
+  .discovery {
+    width: calc(100% - 36px);
+  }
+
+  .discovery-layout {
+    padding-top: 24px;
+  }
+
+  .artist-intro {
+    display: block;
+  }
+
+  .portrait-frame {
+    width: min(100%, 315px);
+    max-width: none;
+  }
+
+  .artist-copy > .eyebrow {
+    margin-top: 20px;
+  }
+
+  .albums-grid,
+  .connections-grid {
+    gap: 14px;
+  }
+
+  .section-header h2 {
+    font-size: 25px;
+  }
+
+  .group-title {
+    min-height: 58px;
+    font-size: 15px;
+  }
+
+  .discovery-footer {
+    flex-wrap: wrap;
+  }
+}
+
+/* ==========================================
+   SMALL MOBILE
+========================================== */
+
+@media (max-width: 380px) {
+  .navigation {
+    flex-wrap: wrap;
+    padding: 18px 0;
+  }
+
+  .search-group {
+    width: 100%;
+  }
+
+  .albums-grid {
+    gap: 9px;
+  }
+
+  .connections-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .group-title {
+    min-height: 0;
+  }
+}
+
+/* ==========================================
+   REDUCED MOTION
+========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .nav-search {
+    transition: none;
+  }
+}
+
+/* ==========================================
+   WATER RIPPLE
+   Discovery page loading transition
+========================================== */
+
+.loading-screen {
+  position: fixed;
+  inset: 94px 0 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f7f5f0;
+
+  z-index: 100;
+
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
+
+.loading-screen.is-fading {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ORIGINAL HOMEPAGE RIPPLE */
+
+.water-ripple {
+  position: relative;
+
+  width: 150px;
+  height: 150px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  isolation: isolate;
+}
+
+.ripple-ring {
+  position: absolute;
+
+  width: 22px;
+  height: 22px;
+
+  border: 1.2px solid #648b9b;
+  border-radius: 50%;
+
+  opacity: 0;
+  transform: scale(0.7);
+
+  animation: gentle-ripple 7.5s
+    cubic-bezier(0.22, 0.42, 0.36, 1)
+    infinite;
+}
+
+.ripple-ring:nth-child(2) {
+  animation-delay: -1.875s;
+}
+
+.ripple-ring:nth-child(3) {
+  animation-delay: -3.75s;
+}
+
+.ripple-ring:nth-child(4) {
+  animation-delay: -5.625s;
+}
+
+.ripple-center {
+  position: absolute;
+
+  width: 4px;
+  height: 4px;
+
+  border-radius: 50%;
+
+  background: #729baa;
+  opacity: 0.5;
+}
+
+@keyframes gentle-ripple {
+  0% {
+    transform: scale(0.65);
+    opacity: 0;
+  }
+
+  12% {
+    opacity: 0.55;
+  }
+
+  48% {
+    opacity: 0.35;
+  }
+
+  78% {
+    opacity: 0.12;
+  }
+
+  100% {
+    transform: scale(6.5);
+    opacity: 0;
+  }
+}
+
+/* MOBILE HEADER */
+
+@media (max-width: 600px) {
+  .loading-screen {
+    top: 86px;
+  }
+}
+
+/* ACCESSIBILITY */
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-screen {
+    transition: none;
+  }
+
+  .ripple-ring {
+    animation: none;
+    transform: scale(3);
+    opacity: 0.16;
+  }
+}

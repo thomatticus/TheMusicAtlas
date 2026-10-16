@@ -124,7 +124,7 @@ const IMAGE_TIMEOUT = 9000;
 
 const MIN_RELATED_ARTIST_FANS = 1000;
 
-const CONNECTIONS_ENABLED = false;
+const CONNECTIONS_ENABLED = true;
 
 const imageOverrides = {};
 
