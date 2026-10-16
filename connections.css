@@ -866,3 +866,61 @@ a:focus-visible {
     opacity: 0.16;
   }
 }
+
+
+
+/* ==========================================
+   MOBILE REFINEMENTS
+========================================== */
+
+@media (max-width: 600px) {
+
+  /* More comfortable header layout */
+
+  .navigation {
+    flex-wrap: wrap;
+    padding: 18px 0;
+  }
+
+  .search-group {
+    width: 100%;
+  }
+
+  /* Two readable album columns */
+
+  .albums-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 16px;
+  }
+
+  /* Connections stack vertically */
+
+  .connections-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .group-title {
+    min-height: 0;
+    margin-bottom: 10px;
+  }
+
+  /* Comfortable spacing between sections */
+
+  .discovery-content {
+    gap: 48px;
+  }
+
+  /* Keep artist names readable */
+
+  .connection {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .connection-name {
+    font-size: 14px;
+  }
+
+}
