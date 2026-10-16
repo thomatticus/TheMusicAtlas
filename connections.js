@@ -1965,10 +1965,10 @@ $("#discovery-search").addEventListener(
 $("#reset-trail").addEventListener(
   "click",
   () => {
-    trail = [];
-    navigate("david-bowie", "David Bowie");
+    window.location.href = "index.html";
   }
 );
+
 
 /* ==========================================
    INITIALIZE
