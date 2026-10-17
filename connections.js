@@ -623,6 +623,12 @@ async function getSimilarArtists(name) {
     limit: 75
   });
 
+  console.log(
+  "Music Atlas similar artists:",
+  name,
+  data.similarartists?.artist
+);
+
   return (data.similarartists?.artist || [])
     .filter(item => item.name)
     .map(item => ({
@@ -2875,3 +2881,50 @@ navigate(
   slug(requested),
   requested
 );
+
+/* ========================================
+   THE MUSIC ATLAS — LIGHT / DARK MODE
+======================================== */
+
+(function setupThemeToggle() {
+  const button = document.getElementById("theme-toggle");
+
+  if (!button) return;
+
+  const icon = button.querySelector(".theme-icon");
+
+  const savedTheme = localStorage.getItem("music-atlas-theme");
+
+  const prefersDark = window.matchMedia(
+    "(prefers-color-scheme: dark)"
+  ).matches;
+
+  function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+
+    icon.textContent = theme === "dark" ? "☀" : "☾";
+
+    const label = theme === "dark"
+      ? "Switch to light mode"
+      : "Switch to dark mode";
+
+    button.setAttribute("aria-label", label);
+    button.title = label;
+  }
+
+  applyTheme(
+    savedTheme === "light" || savedTheme === "dark"
+      ? savedTheme
+      : prefersDark ? "dark" : "light"
+  );
+
+  button.addEventListener("click", () => {
+    const nextTheme =
+      document.documentElement.dataset.theme === "dark"
+        ? "light"
+        : "dark";
+
+    applyTheme(nextTheme);
+    localStorage.setItem("music-atlas-theme", nextTheme);
+  });
+})();

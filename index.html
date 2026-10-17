@@ -8,6 +8,21 @@
 
   <title>The Music Atlas | Discover Music</title>
 
+  <script>
+  (function () {
+    const savedTheme = localStorage.getItem("music-atlas-theme");
+
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+
+    document.documentElement.dataset.theme =
+      savedTheme === "light" || savedTheme === "dark"
+        ? savedTheme
+        : prefersDark ? "dark" : "light";
+  })();
+</script>
+
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
@@ -71,6 +86,21 @@
       </div>
 
     </nav>
+
+          </div>
+
+      <button
+        class="theme-toggle"
+        id="theme-toggle"
+        type="button"
+        aria-label="Switch to dark mode"
+        title="Switch to dark mode"
+      >
+        <span class="theme-icon" aria-hidden="true">☾</span>
+      </button>
+
+    </nav>
+  </header>
 
   </header>
 

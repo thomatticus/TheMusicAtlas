@@ -612,3 +612,229 @@ body {
     transform: none;
   }
 }
+
+/* ========================================
+   THE MUSIC ATLAS — LIGHT / DARK THEME
+   Shared with theme.js on both pages
+======================================== */
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-background: #17191b;
+  --color-surface: #222528;
+  --color-search-background: #edeae4;
+  --color-text: #f1eee8;
+  --color-text-muted: #a5a7a8;
+  --color-placeholder: #8a8279;
+  --color-accent: #63a9c5;
+  --color-icon: #756e67;
+  --color-border: #383b3d;
+  --color-border-focus: #cbbdb2;
+  --color-ripple: #648b9b;
+  --color-ripple-center: #729baa;
+}
+
+body {
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+/* PRESERVE THE ORIGINAL SEARCH BAR */
+
+:root[data-theme="dark"] .nav-search {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] .nav-search input {
+  color: #292522;
+}
+
+:root[data-theme="dark"] .nav-search input::placeholder {
+  color: #8a8279;
+}
+
+:root[data-theme="dark"] .search-icon {
+  stroke: #756e67;
+}
+
+:root[data-theme="dark"] .nav-search button {
+  color: #756e67;
+}
+
+:root[data-theme="dark"] .nav-search button:hover {
+  color: #287fa0;
+}
+
+:root[data-theme="dark"] .nav-search:focus-within {
+  background: #ffffff;
+}
+
+/* THEME TOGGLE */
+
+.navigation {
+  position: relative;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 22px;
+  right: 294px;
+
+  width: 34px;
+  height: 34px;
+
+  padding: 0;
+  display: grid;
+  place-items: center;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: transparent;
+  color: var(--color-text);
+
+  cursor: pointer;
+  z-index: 10;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.theme-toggle:hover {
+  background: rgba(41, 37, 34, 0.07);
+}
+
+:root[data-theme="dark"] .theme-toggle {
+  background: #292d30;
+}
+
+:root[data-theme="dark"] .theme-toggle:hover {
+  background: #383e42;
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.theme-icon {
+  font-size: 21px;
+  line-height: 1;
+  font-weight: 400;
+}
+
+/* DARK MODE DETAILS */
+
+:root[data-theme="dark"] .artist-picture {
+  background: #292d30;
+}
+
+:root[data-theme="dark"] .reshuffle-border {
+  stroke: #45484a;
+}
+
+/* THEME TOGGLE — RESPONSIVE */
+
+@media (max-width: 600px) {
+  .theme-toggle {
+    right: 194px;
+  }
+}
+
+@media (max-width: 380px) {
+  .theme-toggle {
+    top: 20px;
+    right: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body,
+  .theme-toggle {
+    transition: none;
+  }
+}
+
+/* ========================================
+   DARK MODE — LIGHT HEADER
+======================================== */
+
+:root[data-theme="dark"] .site-header {
+  background: #f7f5f0;
+  border-bottom: 1px solid #e8e3da;
+}
+
+:root[data-theme="dark"] .navigation {
+  background: transparent;
+}
+
+/* Keep the original dark logo */
+
+:root[data-theme="dark"] .brand {
+  color: #292522;
+}
+
+/* Keep the header caption readable */
+
+:root[data-theme="dark"] .search-caption {
+  color: #625f5a;
+}
+
+/* Theme toggle on the light header */
+
+:root[data-theme="dark"] .theme-toggle {
+  background: transparent;
+  color: #292522;
+}
+
+:root[data-theme="dark"] .theme-toggle:hover {
+  background: rgba(41, 37, 34, 0.07);
+}
+
+/* ========================================
+   THE MUSIC ATLAS — THEME-AWARE LOADING
+======================================== */
+
+:root[data-theme="dark"] {
+  --color-background: #17191b;
+  --color-ripple: #648b9b;
+  --color-ripple-center: #729baa;
+}
+
+:root[data-theme="dark"] .loading-screen {
+  background-color: #17191b;
+}
+
+:root[data-theme="dark"] .ripple-overlay {
+  background-color: #17191b;
+}
+
+/* ========================================
+   DARK MODE — TRANSITION COLORS
+======================================== */
+
+/* Header stays warm white */
+:root[data-theme="dark"] .site-header {
+  background: #f7f5f0;
+  border-bottom: 1px solid #e8e3da;
+}
+
+/* Logo stays dark */
+:root[data-theme="dark"] .brand {
+  color: #292522;
+}
+
+/* Theme button remains visible */
+:root[data-theme="dark"] .theme-toggle {
+  color: #292522;
+  background: transparent;
+}
+
+/* Loading area stays charcoal */
+:root[data-theme="dark"] .loading-screen,
+:root[data-theme="dark"] .ripple-overlay {
+  background-color: #17191b;
+}
