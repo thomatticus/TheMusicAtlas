@@ -1129,3 +1129,72 @@ body {
 :root[data-theme="dark"] .ripple-overlay {
   background-color: #17191b;
 }
+
+
+/* ========================================
+   THE MUSIC ATLAS — SVG THEME ICON
+======================================== */
+
+.theme-svg {
+  width: 19px;
+  height: 19px;
+  display: block;
+}
+
+/* Light mode: moon */
+
+.sun-core,
+.sun-rays {
+  display: none;
+}
+
+.moon-shape {
+  display: block;
+}
+
+/* Dark mode: sun */
+
+:root[data-theme="dark"] .sun-core,
+:root[data-theme="dark"] .sun-rays {
+  display: block;
+}
+
+:root[data-theme="dark"] .moon-shape {
+  display: none;
+}
+
+/* ========================================
+   MOBILE ONLY — THEME BUTTON PLACEMENT
+======================================== */
+
+@media (max-width: 600px) {
+
+  .navigation {
+    position: relative;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px 0;
+  }
+
+  .brand {
+    flex: 1;
+  }
+
+  .theme-toggle {
+    position: static;
+    transform: none;
+
+    order: 2;
+    flex: 0 0 34px;
+
+    width: 34px;
+    height: 34px;
+  }
+
+  .search-group {
+    order: 3;
+    width: 100%;
+    flex-basis: 100%;
+  }
+
+}

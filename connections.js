@@ -2891,8 +2891,6 @@ navigate(
 
   if (!button) return;
 
-  const icon = button.querySelector(".theme-icon");
-
   const savedTheme = localStorage.getItem("music-atlas-theme");
 
   const prefersDark = window.matchMedia(
@@ -2901,8 +2899,6 @@ navigate(
 
   function applyTheme(theme) {
     document.documentElement.dataset.theme = theme;
-
-    icon.textContent = theme === "dark" ? "☀" : "☾";
 
     const label = theme === "dark"
       ? "Switch to light mode"

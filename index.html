@@ -8,23 +8,26 @@
 
   <title>The Music Atlas | Discover Music</title>
 
+  <!-- APPLY SAVED THEME BEFORE PAGE LOAD -->
   <script>
-  (function () {
-    const savedTheme = localStorage.getItem("music-atlas-theme");
+    (function () {
+      const savedTheme = localStorage.getItem("music-atlas-theme");
 
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
 
-    document.documentElement.dataset.theme =
-      savedTheme === "light" || savedTheme === "dark"
-        ? savedTheme
-        : prefersDark ? "dark" : "light";
-  })();
-</script>
+      document.documentElement.dataset.theme =
+        savedTheme === "light" || savedTheme === "dark"
+          ? savedTheme
+          : prefersDark ? "dark" : "light";
+    })();
+  </script>
 
   <link rel="stylesheet" href="style.css">
+
   <script src="script.js" defer></script>
+  <script src="theme.js" defer></script>
 </head>
 
 <body>
@@ -40,6 +43,8 @@
       <a href="#home" class="brand" id="home-link">
         THE MUSIC ATLAS<span>.</span>
       </a>
+
+      <!-- SEARCH — UNCHANGED -->
 
       <div class="search-group">
 
@@ -85,9 +90,7 @@
 
       </div>
 
-    </nav>
-
-          </div>
+      <!-- LIGHT / DARK THEME BUTTON -->
 
       <button
         class="theme-toggle"
@@ -96,11 +99,52 @@
         aria-label="Switch to dark mode"
         title="Switch to dark mode"
       >
-        <span class="theme-icon" aria-hidden="true">☾</span>
+
+        <svg
+          class="theme-svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+
+          <!-- SUN -->
+
+          <circle
+            class="sun-core"
+            cx="12"
+            cy="12"
+            r="4"
+          ></circle>
+
+          <path
+            class="sun-rays"
+            d="M12 2v2
+               M12 20v2
+               M4.93 4.93l1.42 1.42
+               M17.65 17.65l1.42 1.42
+               M2 12h2
+               M20 12h2
+               M4.93 19.07l1.42-1.42
+               M17.65 6.35l1.42-1.42"
+          ></path>
+
+          <!-- MOON -->
+
+          <path
+            class="moon-shape"
+            d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5
+               8.5 8.5 0 1 0 20.5 14.5Z"
+          ></path>
+
+        </svg>
+
       </button>
 
     </nav>
-  </header>
 
   </header>
 
@@ -118,6 +162,7 @@
   >
 
     <div class="water-ripple" aria-hidden="true">
+      <span class="ripple-ring"></span>
       <span class="ripple-ring"></span>
       <span class="ripple-ring"></span>
       <span class="ripple-ring"></span>
@@ -186,79 +231,74 @@
         ></div>
 
 
-        <!-- EXPLORE ANOTHER SIX -->
+        <!-- ========================================
+             CIRCULAR RESHUFFLE BUTTON
+        ========================================= -->
 
-       
-<!-- ========================================
-     CIRCULAR RESHUFFLE BUTTON
-========================================= -->
+        <div class="featured-footer">
 
+          <button
+            class="refresh-artists"
+            id="refresh-artists"
+            type="button"
+            aria-label="Reshuffle artists"
+          >
 
+            <svg
+              class="reshuffle-art"
+              viewBox="0 0 120 120"
+              aria-hidden="true"
+            >
 
-<div class="featured-footer">
+              <defs>
+                <path
+                  id="reshuffle-top"
+                  d="M 18,60 A 42,42 0 0,1 102,60"
+                />
 
-  <button
-    class="refresh-artists"
-    id="refresh-artists"
-    type="button"
-    aria-label="Reshuffle artists"
-  >
+                <path
+                  id="reshuffle-bottom"
+                  d="M 18,60 A 42,42 0 0,0 102,60"
+                />
+              </defs>
 
-    <svg
-      class="reshuffle-art"
-      viewBox="0 0 120 120"
-      aria-hidden="true"
-    >
+              <circle
+                class="reshuffle-border"
+                cx="60"
+                cy="60"
+                r="58"
+              />
 
-      <defs>
-        <path
-          id="reshuffle-top"
-          d="M 18,60 A 42,42 0 0,1 102,60"
-        />
+              <g class="reshuffle-lettering">
 
-        <path
-          id="reshuffle-bottom"
-          d="M 18,60 A 42,42 0 0,0 102,60"
-        />
-      </defs>
+                <text text-anchor="middle">
+                  <textPath
+                    href="#reshuffle-top"
+                    startOffset="50%"
+                  >RESHUFFLE</textPath>
+                </text>
 
-      <circle
-        class="reshuffle-border"
-        cx="60"
-        cy="60"
-        r="58"
-      />
+                <text text-anchor="middle">
+                  <textPath
+                    href="#reshuffle-bottom"
+                    startOffset="50%"
+                  >RESHUFFLE</textPath>
+                </text>
 
-      <g class="reshuffle-lettering">
+              </g>
 
-        <text text-anchor="middle">
-          <textPath
-            href="#reshuffle-top"
-            startOffset="50%"
-          >RESHUFFLE</textPath>
-        </text>
+              <circle
+                class="reshuffle-center"
+                cx="60"
+                cy="60"
+                r="2.5"
+              />
 
-        <text text-anchor="middle">
-          <textPath
-            href="#reshuffle-bottom"
-            startOffset="50%"
-          >RESHUFFLE</textPath>
-        </text>
+            </svg>
 
-      </g>
+          </button>
 
-      <circle
-        class="reshuffle-center"
-        cx="60"
-        cy="60"
-        r="2.5"
-      />
-
-    </svg>
-
-  </button>
-
-</div>
+        </div>
 
       </div>
 
