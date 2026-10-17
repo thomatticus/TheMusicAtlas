@@ -924,3 +924,51 @@ a:focus-visible {
   }
 
 }
+
+/* ========================================
+   ARTIST BIOGRAPHY
+========================================= */
+
+#artist-bio {
+  line-height: 1.75;
+  overflow-wrap: break-word;
+}
+
+/* ========================================
+   READ MORE / SHOW LESS
+========================================= */
+
+.bio-toggle {
+  display: inline-flex;
+  align-items: center;
+
+  margin-top: 12px;
+  padding: 0 0 4px;
+
+  border: none;
+  border-bottom: 1px solid transparent;
+
+  background: transparent;
+
+  color: #287fa0;
+
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    color 180ms ease,
+    border-color 180ms ease;
+}
+
+.bio-toggle:hover {
+  color: #292522;
+  border-bottom-color: currentColor;
+}
+
+.bio-toggle:focus-visible {
+  outline: 2px solid #287fa0;
+  outline-offset: 4px;
+}

@@ -1,4 +1,3 @@
-
 "use strict";
 
 /* ==========================================
@@ -57,6 +56,35 @@ function slug(value) {
 
 function normalize(value) {
   return slug(value).replace(/-/g, "");
+}
+
+/* ==========================================
+   SMART ALBUM TITLE MATCHING
+========================================== */
+
+function normalizeAlbum(value) {
+  return normalize(
+    String(value || "")
+      .replace(/\([^)]*\)/g, " ")
+      .replace(/\[[^\]]*\]/g, " ")
+      .replace(
+        /\b(deluxe|remastered|remaster|expanded|anniversary|edition|bonus tracks|bonus track)\b/gi,
+        " "
+      )
+      .replace(/\s+/g, " ")
+  );
+}
+
+function exactArtistName(value) {
+  return String(value || "")
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function artistNamesMatch(left, right) {
+  return exactArtistName(left) === exactArtistName(right);
 }
 
 function makeElement(tag, className = "", text = "") {
@@ -161,6 +189,104 @@ function shorten(text, max = 180) {
   return fragment
     .slice(0, lastSpace > 0 ? lastSpace : max)
     .trim() + "…";
+}
+
+/* ==========================================
+   SMART ARTIST BIOGRAPHIES
+========================================== */
+
+function shortBiography(text, maxWords = 65) {
+  const full = cleanText(text);
+
+  if (!full) return "";
+
+  const sentences =
+    full.match(/[^.!?]+(?:[.!?]+|$)/g) || [full];
+
+  const selected = [];
+  let words = 0;
+
+  for (const sentence of sentences) {
+    const trimmed = sentence.trim();
+
+    if (!trimmed) continue;
+
+    const count = trimmed.split(/\s+/).length;
+
+    if (
+      selected.length > 0 &&
+      words + count > maxWords
+    ) {
+      break;
+    }
+
+    selected.push(trimmed);
+    words += count;
+
+    if (words >= maxWords) break;
+  }
+
+  return selected.join(" ").trim();
+}
+
+/* ==========================================
+   BIOGRAPHY EXPAND / COLLAPSE
+========================================== */
+
+function renderBiography(text) {
+  const bio = document.querySelector("#artist-bio");
+
+  if (!bio) return;
+
+  const full = cleanText(text);
+  const short = shortBiography(full, 65);
+
+  const oldButton =
+    document.querySelector("#bio-toggle");
+
+  if (oldButton) oldButton.remove();
+
+  bio.textContent = short;
+
+  if (!full || short === full) {
+    return;
+  }
+
+  const button = document.createElement("button");
+
+  button.id = "bio-toggle";
+  button.className = "bio-toggle";
+  button.type = "button";
+  button.textContent = "Read more";
+
+  button.setAttribute(
+    "aria-expanded",
+    "false"
+  );
+
+  bio.insertAdjacentElement(
+    "afterend",
+    button
+  );
+
+  let expanded = false;
+
+  button.addEventListener("click", () => {
+    expanded = !expanded;
+
+    bio.textContent = expanded
+      ? full
+      : short;
+
+    button.textContent = expanded
+      ? "Show less"
+      : "Read more";
+
+    button.setAttribute(
+      "aria-expanded",
+      String(expanded)
+    );
+  });
 }
 
 function usefulText(text, minimum = 45) {
@@ -320,6 +446,10 @@ const PROFILES = {
   }
 };
 
+/* ==========================================
+   CURATED PROFILE BUILDER
+========================================== */
+
 function curatedProfile(key) {
   const profile = PROFILES[key];
 
@@ -328,12 +458,15 @@ function curatedProfile(key) {
   return {
     ...profile,
     image: null,
+
     albums: profile.albums.map(album => ({
       title: album[0],
       year: album[1],
       why: album[2],
-      image: null
+      image: null,
+      mbid: null
     })),
+
     past: [...profile.past],
     present: [...profile.present],
     future: [...profile.future]
@@ -343,12 +476,13 @@ function curatedProfile(key) {
 /* ==========================================
    THEAUDIODB
 
-   Request spacing remains unchanged to
-   respect the external service.
+   Requests are spaced to respect the
+   external service.
 ========================================== */
 
 function audioDb(endpoint, params = {}) {
-  const key = `audiodb:${endpoint}:${JSON.stringify(params)}`;
+  const key =
+    `audiodb:${endpoint}:${JSON.stringify(params)}`;
 
   return cached(key, async () => {
     const url = new URL(endpoint, AUDIODB_URL);
@@ -365,7 +499,9 @@ function audioDb(endpoint, params = {}) {
           nextAudioDbRequest - Date.now()
         );
 
-        if (remaining) await pause(remaining);
+        if (remaining) {
+          await pause(remaining);
+        }
 
         nextAudioDbRequest = Date.now() + 2100;
 
@@ -379,24 +515,29 @@ function audioDb(endpoint, params = {}) {
 }
 
 async function getAudioDbArtist(name) {
-  const data = await audioDb("search.php", { s: name });
+  const data = await audioDb("search.php", {
+    s: name
+  });
 
   return (data.artists || []).find(artist =>
-    normalize(artist.strArtist) === normalize(name)
+    artistNamesMatch(artist.strArtist, name)
   ) || null;
 }
 
 async function getAudioDbAlbums(name) {
-  const data = await audioDb("searchalbum.php", { s: name });
+  const data = await audioDb("searchalbum.php", {
+    s: name
+  });
 
   return (data.album || []).filter(album =>
-    normalize(album.strArtist) === normalize(name)
+    artistNamesMatch(album.strArtist, name)
   );
 }
 
 function findAudioDbAlbum(albums, title) {
   return albums.find(album =>
-    normalize(album.strAlbum) === normalize(title)
+    normalizeAlbum(album.strAlbum) ===
+    normalizeAlbum(title)
   ) || null;
 }
 
@@ -413,7 +554,8 @@ function audioDbAlbumImage(album) {
 ========================================== */
 
 function lastfm(method, params = {}) {
-  const key = `lastfm:${method}:${JSON.stringify(params)}`;
+  const key =
+    `lastfm:${method}:${JSON.stringify(params)}`;
 
   return cached(key, async () => {
     if (
@@ -421,7 +563,9 @@ function lastfm(method, params = {}) {
       LASTFM_API_KEY ===
         "PASTE_YOUR_EXISTING_LASTFM_API_KEY_HERE"
     ) {
-      throw new Error("Add your existing Last.fm API key.");
+      throw new Error(
+        "Add your existing Last.fm API key."
+      );
     }
 
     const url = new URL(LASTFM_URL);
@@ -437,7 +581,9 @@ function lastfm(method, params = {}) {
     const data = await requestJSON(url.toString());
 
     if (data.error) {
-      throw new Error(data.message || "Last.fm unavailable");
+      throw new Error(
+        data.message || "Last.fm unavailable"
+      );
     }
 
     return data;
@@ -450,14 +596,31 @@ async function getLastfmArtist(name) {
     autocorrect: 1
   });
 
-  return data.artist || null;
+  const artist = data.artist || null;
+
+  if (!artist) return null;
+
+  if (artistNamesMatch(artist.name, name)) {
+    return artist;
+  }
+
+  // Prevent punctuation-only artist collisions.
+  // Anxious and .anxious. remain separate artists.
+  if (
+    normalize(artist.name) === normalize(name)
+  ) {
+    return null;
+  }
+
+  // Other spelling corrections can still be useful.
+  return artist;
 }
 
 async function getSimilarArtists(name) {
   const data = await lastfm("artist.getSimilar", {
     artist: name,
-    autocorrect: 1,
-    limit: 50
+    autocorrect: 0,
+    limit: 75
   });
 
   return (data.similarartists?.artist || [])
@@ -472,7 +635,7 @@ async function getSimilarArtists(name) {
 async function getTopAlbums(name) {
   const data = await lastfm("artist.getTopAlbums", {
     artist: name,
-    autocorrect: 1,
+    autocorrect: 0,
     limit: 80
   });
 
@@ -492,18 +655,22 @@ async function getLastfmAlbum(artist, album) {
   const data = await lastfm("album.getInfo", {
     artist,
     album,
-    autocorrect: 1
+    autocorrect: 0
   });
 
-  return data.album || null;
+  const result = data.album || null;
+
+  return result &&
+    artistNamesMatch(
+      result.artist?.name || result.artist,
+      artist
+    )
+      ? result
+      : null;
 }
 
 /* ==========================================
    MUSICBRAINZ
-
-   Important: We retain the original
-   request spacing and full candidate
-   verification for recommendation quality.
 ========================================== */
 
 function musicBrainz(path) {
@@ -516,7 +683,9 @@ function musicBrainz(path) {
           nextMusicBrainzRequest - Date.now()
         );
 
-        if (remaining) await pause(remaining);
+        if (remaining) {
+          await pause(remaining);
+        }
 
         nextMusicBrainzRequest = Date.now() + 1200;
 
@@ -537,19 +706,65 @@ function musicBrainz(path) {
   });
 }
 
+/* ==========================================
+   ARTIST IDENTITY
+========================================== */
+
 async function findMusicBrainzArtist(name) {
   const query = encodeURIComponent(
-    `artist:"${name.replace(/"/g, "")}"`
+    `artist:"${String(name).replace(/"/g, "")}"`
   );
 
   const data = await musicBrainz(
-    `artist/?query=${query}&fmt=json&limit=15`
+    `artist/?query=${query}&fmt=json&limit=50`
   );
 
-  return (data.artists || []).find(artist =>
-    normalize(artist.name) === normalize(name)
-  ) || null;
+  const candidates = data.artists || [];
+  const requested = exactArtistName(name);
+
+  const exact = candidates.filter(artist =>
+    artistNamesMatch(artist.name, name)
+  );
+
+  if (exact.length) {
+    return exact.sort((a, b) =>
+      (b.score || 0) - (a.score || 0)
+    )[0];
+  }
+
+  const partial = candidates.filter(artist => {
+    const candidate = exactArtistName(artist.name);
+
+    return (
+      candidate.startsWith(requested) &&
+      candidate !== requested &&
+      candidate[0] === requested[0]
+    );
+  });
+
+  partial.sort((a, b) => {
+    const aName = exactArtistName(a.name);
+    const bName = exactArtistName(b.name);
+
+    const aPrefix =
+      aName.startsWith(requested + " ") ? 1 : 0;
+
+    const bPrefix =
+      bName.startsWith(requested + " ") ? 1 : 0;
+
+    return (
+      (bPrefix - aPrefix) ||
+      ((b.score || 0) - (a.score || 0)) ||
+      (aName.length - bName.length)
+    );
+  });
+
+  return partial[0] || null;
 }
+
+/* ==========================================
+   VERIFIED MUSICBRAINZ ALBUMS
+========================================== */
 
 async function getMusicBrainzAlbums(id) {
   const data = await musicBrainz(
@@ -560,11 +775,18 @@ async function getMusicBrainzAlbums(id) {
   const albums = new Map();
 
   for (const item of data["release-groups"] || []) {
-    if (item["primary-type"] !== "Album") continue;
+    if (item["primary-type"] !== "Album") {
+      continue;
+    }
 
     if (
       (item["secondary-types"] || []).some(type =>
-        ["Compilation", "Live", "Remix", "DJ-mix"].includes(type)
+        [
+          "Compilation",
+          "Live",
+          "Remix",
+          "DJ-mix"
+        ].includes(type)
       )
     ) {
       continue;
@@ -572,17 +794,24 @@ async function getMusicBrainzAlbums(id) {
 
     const key = normalize(item.title);
 
-    if (!key || albums.has(key)) continue;
+    if (!key || albums.has(key)) {
+      continue;
+    }
 
     albums.set(key, {
       title: item.title,
-      year: item["first-release-date"]?.slice(0, 4) || "",
+      year:
+        item["first-release-date"]?.slice(0, 4) || "",
       mbid: item.id
     });
   }
 
   return [...albums.values()];
 }
+
+/* ==========================================
+   MUSICBRAINZ RELATIONSHIPS
+========================================== */
 
 async function getMusicBrainzRelationships(id) {
   const data = await musicBrainz(
@@ -602,16 +831,23 @@ async function getMusicBrainzRelationships(id) {
   for (const relation of data.relations || []) {
     const artist = relation.artist;
 
-    if (!artist?.name) continue;
-    if (!allowedTypes.has(relation.type)) continue;
+    if (!artist?.name) {
+      continue;
+    }
 
-    // Preserve the existing group-only
-    // relationship filtering.
-    if (artist.type !== "Group") continue;
+    if (!allowedTypes.has(relation.type)) {
+      continue;
+    }
+
+    if (artist.type !== "Group") {
+      continue;
+    }
 
     const key = normalize(artist.name);
 
-    if (seen.has(key)) continue;
+    if (seen.has(key)) {
+      continue;
+    }
 
     seen.add(key);
     results.push(artist.name);
@@ -678,28 +914,36 @@ async function artistBiography(
     65
   );
 
-  if (audioBio) return shorten(audioBio, 290);
-
   const wiki = await safe(
     () => wikipediaExtract(name)
   );
 
-  if (
+  const wikiBio =
     wiki &&
-    normalize(wiki.title) === normalize(name) &&
-    wiki.text.length >= 65
-  ) {
-    return shorten(wiki.text, 290);
-  }
+    artistNamesMatch(wiki.title, name)
+      ? usefulText(wiki.text, 65)
+      : "";
 
   const lastfmBio = usefulText(
     lastfmArtist?.bio?.summary,
     65
   );
 
-  if (lastfmBio) return shorten(lastfmBio, 290);
+  const candidates = [
+    wikiBio,
+    audioBio,
+    lastfmBio
+  ].filter(Boolean);
 
-  return `Explore the music and connections of ${name}.`;
+  if (!candidates.length) {
+    return `Explore the music and connections of ${name}.`;
+  }
+
+  const substantial = candidates.find(
+    text => text.split(/\s+/).length >= 65
+  );
+
+  return substantial || candidates[0];
 }
 
 /* ==========================================
@@ -721,7 +965,9 @@ async function albumDescription(
     audioMatch?.strDescription
   );
 
-  if (audioDescription) return audioDescription;
+  if (audioDescription) {
+    return audioDescription;
+  }
 
   const lastfmAlbum = await safe(
     () => getLastfmAlbum(artist, album.title)
@@ -731,7 +977,9 @@ async function albumDescription(
     lastfmAlbum?.wiki?.summary
   );
 
-  if (lastfmDescription) return lastfmDescription;
+  if (lastfmDescription) {
+    return lastfmDescription;
+  }
 
   const wiki = await safe(
     () => wikipediaExtract(
@@ -742,7 +990,9 @@ async function albumDescription(
   if (
     wiki &&
     wiki.text.length >= 55 &&
-    normalize(wiki.title).includes(normalize(album.title))
+    normalize(wiki.title).includes(
+      normalize(album.title)
+    )
   ) {
     return albumSummary(wiki.text);
   }
@@ -752,8 +1002,6 @@ async function albumDescription(
 
 /* ==========================================
    SELECT THREE ALBUMS
-
-   Selection order remains unchanged.
 ========================================== */
 
 function selectAlbums(
@@ -772,11 +1020,15 @@ function selectAlbums(
   );
 
   function add(album) {
-    if (results.length >= 3) return;
+    if (results.length >= 3) {
+      return;
+    }
 
     const key = normalize(album.title);
 
-    if (!key || seen.has(key)) return;
+    if (!key || seen.has(key)) {
+      return;
+    }
 
     seen.add(key);
 
@@ -787,39 +1039,59 @@ function selectAlbums(
 
     results.push({
       title: album.title,
-      year: album.year || audio?.intYearReleased || "",
+      year:
+        album.year ||
+        audio?.intYearReleased ||
+        "",
       why: "",
-      image: audioDbAlbumImage(audio)
+      image: audioDbAlbumImage(audio),
+      mbid: album.mbid || null
     });
   }
 
   for (const album of topAlbums) {
-    const match = verified.get(normalize(album.title));
+    const match = verified.get(
+      normalize(album.title)
+    );
 
-    if (match) add(match);
-    if (results.length === 3) break;
+    if (match) {
+      add(match);
+    }
+
+    if (results.length === 3) {
+      break;
+    }
   }
 
   for (const album of verifiedAlbums) {
     add(album);
-    if (results.length === 3) break;
+
+    if (results.length === 3) {
+      break;
+    }
   }
 
   if (results.length < 3) {
     for (const album of audioAlbums) {
       add({
         title: album.strAlbum,
-        year: album.intYearReleased
+        year: album.intYearReleased,
+        mbid: null
       });
 
-      if (results.length === 3) break;
+      if (results.length === 3) {
+        break;
+      }
     }
   }
 
   if (results.length < 3) {
     for (const album of topAlbums) {
       add(album);
-      if (results.length === 3) break;
+
+      if (results.length === 3) {
+        break;
+      }
     }
   }
 
@@ -828,18 +1100,26 @@ function selectAlbums(
 
 /* ==========================================
    ARTIST CONNECTION DISCOVERY
+========================================== */
 
-   Original 24-candidate algorithm preserved.
+/* ==========================================
+   ARTIST START YEAR
 ========================================== */
 
 function artistStartYear(artist) {
-  const date = artist?.["life-span"]?.begin || "";
+  const date =
+    artist?.["life-span"]?.begin || "";
+
   const year = Number(date.slice(0, 4));
 
   return year >= 1850 && year <= 2100
     ? year
     : null;
 }
+
+/* ==========================================
+   REVERSE CURATED CONNECTIONS
+========================================== */
 
 function reverseEditorialLinks(name) {
   const result = {
@@ -848,10 +1128,14 @@ function reverseEditorialLinks(name) {
     future: []
   };
 
-  const key = normalize(name);
+  const key = exactArtistName(name);
 
   for (const profile of Object.values(PROFILES)) {
-    if (normalize(profile.name) === key) continue;
+    if (
+      exactArtistName(profile.name) === key
+    ) {
+      continue;
+    }
 
     const mappings = [
       ["past", "future"],
@@ -862,7 +1146,8 @@ function reverseEditorialLinks(name) {
     for (const [source, destination] of mappings) {
       if (
         profile[source].some(
-          artist => normalize(artist) === key
+          artist =>
+            exactArtistName(artist) === key
         )
       ) {
         result[destination].push(profile.name);
@@ -873,6 +1158,63 @@ function reverseEditorialLinks(name) {
   return result;
 }
 
+/* ==========================================
+   VERIFY CONNECTION CANDIDATES
+========================================== */
+
+async function verifyConnectionCandidates(
+  candidates,
+  sourceArtist
+) {
+  const enriched = await Promise.all(
+    candidates.map(async candidate => {
+      const mb = await safe(
+        () => findMusicBrainzArtist(
+          candidate.name
+        )
+      );
+
+      return {
+        name:
+          mb &&
+          artistNamesMatch(
+            mb.name,
+            candidate.name
+          )
+            ? mb.name
+            : candidate.name,
+
+        year: artistStartYear(mb),
+
+        type: mb?.type || null,
+
+        match:
+          Number(candidate.match) || 0,
+
+        mbid: mb?.id || null
+      };
+    })
+  );
+
+  return enriched.filter(candidate => {
+    if (
+      sourceArtist?.type === "Group" &&
+      candidate.type === "Person"
+    ) {
+      return false;
+    }
+
+    return Boolean(
+      candidate.name &&
+      candidate.match > 0
+    );
+  });
+}
+
+/* ==========================================
+   BUILD MUSICAL CONNECTIONS
+========================================== */
+
 async function buildConnections(
   name,
   similar,
@@ -881,150 +1223,290 @@ async function buildConnections(
 ) {
   const result = reverseEditorialLinks(name);
 
-  const seen = new Set([
-    normalize(name),
-    ...Object.values(result).flat().map(normalize)
+  const used = new Set([
+    exactArtistName(name),
+    ...Object.values(result)
+      .flat()
+      .map(exactArtistName)
   ]);
 
-  function add(column, artist) {
-    const key = normalize(artist);
+  const sourceYear =
+    artistStartYear(mbArtist);
 
-    if (!key || seen.has(key)) return false;
-    if (result[column].length >= 3) return false;
+  /* ========================================
+     ADD AN ARTIST TO A COLUMN
+  ======================================== */
 
-    seen.add(key);
-    result[column].push(artist);
+  function add(column, artistName) {
+    const key =
+      exactArtistName(artistName);
+
+    if (!key || used.has(key)) {
+      return false;
+    }
+
+    if (result[column].length >= 3) {
+      return false;
+    }
+
+    used.add(key);
+
+    result[column].push(artistName);
 
     return true;
   }
 
-  for (const artist of documented) {
+  function allColumnsFull() {
+    return (
+      result.past.length >= 3 &&
+      result.present.length >= 3 &&
+      result.future.length >= 3
+    );
+  }
+
+  /* ========================================
+     DOCUMENTED COLLABORATIONS
+  ======================================== */
+
+  for (const artist of documented || []) {
     add("present", artist);
   }
 
-  const sourceYear = artistStartYear(mbArtist);
+  /* ========================================
+     PREPARE LAST.FM RECOMMENDATIONS
+  ======================================== */
 
-  // Do not reduce this number:
-  // these checks preserve recommendation quality.
-  const candidates = similar
-    .filter(item =>
-      item.name &&
-      item.match > 0 &&
-      !seen.has(normalize(item.name))
-    )
-    .slice(0, 24);
+  const candidateNames = new Set();
 
-  const enriched = await Promise.all(
-    candidates.map(async candidate => {
-      const mb = await safe(
-        () => findMusicBrainzArtist(candidate.name)
-      );
+  const candidates = (similar || [])
+    .filter(item => {
+      if (!item?.name) {
+        return false;
+      }
 
-      return {
-        name: candidate.name,
-        year: artistStartYear(mb),
-        type: mb?.type || null,
-        match: candidate.match
-      };
+      if (!(Number(item.match) > 0)) {
+        return false;
+      }
+
+      const key =
+        exactArtistName(item.name);
+
+      if (
+        used.has(key) ||
+        candidateNames.has(key)
+      ) {
+        return false;
+      }
+
+      candidateNames.add(key);
+
+      return true;
     })
-  );
-
-  const filtered = enriched.filter(candidate => {
-    if (!candidate.type) return false;
-
-    if (
-      mbArtist?.type === "Group" &&
-      candidate.type === "Person"
-    ) {
-      return false;
-    }
-
-    return (
-      candidate.type === "Group" ||
-      candidate.type === "Person"
+    .sort(
+      (a, b) =>
+        Number(b.match) -
+        Number(a.match)
     );
-  });
 
-  // Earlier artists.
-  for (const candidate of filtered) {
-    if (!sourceYear || !candidate.year) continue;
+  /* ========================================
+     CHRONOLOGICAL CLASSIFICATION
+  ======================================== */
 
-    if (candidate.year <= sourceYear - 5) {
-      add("past", candidate.name);
-    }
-  }
-
-  // Contemporary artists.
-  for (const candidate of filtered) {
-    if (result.present.length >= 3) break;
-
+  function classify(candidate) {
     if (
-      sourceYear &&
-      candidate.year &&
-      Math.abs(candidate.year - sourceYear) <= 8
+      !sourceYear ||
+      !candidate.year
     ) {
-      add("present", candidate.name);
+      return "unknown";
+    }
+
+    const difference =
+      candidate.year - sourceYear;
+
+    if (difference <= -5) {
+      return "past";
+    }
+
+    if (difference >= 5) {
+      return "future";
+    }
+
+    return "present";
+  }
+
+  /* ========================================
+     DISTRIBUTE VERIFIED CANDIDATES
+  ======================================== */
+
+  function distribute(artists) {
+    const available = artists.filter(
+      candidate =>
+        !used.has(
+          exactArtistName(candidate.name)
+        )
+    );
+
+    /* ======================================
+       FIRST PASS: STRONG CHRONOLOGY
+    ====================================== */
+
+    for (const column of [
+      "past",
+      "future",
+      "present"
+    ]) {
+      for (const candidate of available) {
+        if (result[column].length >= 3) {
+          break;
+        }
+
+        if (
+          classify(candidate) === column
+        ) {
+          add(
+            column,
+            candidate.name
+          );
+        }
+      }
+    }
+
+    /* ======================================
+       SECOND PASS: RELAXED CHRONOLOGY
+    ====================================== */
+
+    if (sourceYear) {
+      for (const candidate of available) {
+        if (result.past.length >= 3) {
+          break;
+        }
+
+        if (
+          candidate.year &&
+          candidate.year < sourceYear
+        ) {
+          add(
+            "past",
+            candidate.name
+          );
+        }
+      }
+
+      for (const candidate of available) {
+        if (result.future.length >= 3) {
+          break;
+        }
+
+        if (
+          candidate.year &&
+          candidate.year > sourceYear
+        ) {
+          add(
+            "future",
+            candidate.name
+          );
+        }
+      }
+    }
+
+    /* ======================================
+       THIRD PASS: UNKNOWN-DATE ARTISTS
+    ====================================== */
+
+    const unknown = available.filter(
+      candidate =>
+        classify(candidate) === "unknown" &&
+        !used.has(
+          exactArtistName(candidate.name)
+        )
+    );
+
+    for (const column of [
+      "past",
+      "future",
+      "present"
+    ]) {
+      for (const candidate of unknown) {
+        if (result[column].length >= 3) {
+          break;
+        }
+
+        add(
+          column,
+          candidate.name
+        );
+      }
+    }
+
+    /* ======================================
+       FINAL PASS: RELATED DISCOVERIES
+    ====================================== */
+
+    for (const column of [
+      "past",
+      "future",
+      "present"
+    ]) {
+      for (const candidate of available) {
+        if (result[column].length >= 3) {
+          break;
+        }
+
+        add(
+          column,
+          candidate.name
+        );
+      }
     }
   }
 
-  // Later artists.
-  for (const candidate of filtered) {
-    if (!sourceYear || !candidate.year) continue;
+  /* ========================================
+     FIRST PASS — ORIGINAL 24 CANDIDATES
+  ======================================== */
 
-    if (candidate.year >= sourceYear + 5) {
-      add("future", candidate.name);
+  const primaryCandidates =
+    candidates.slice(0, 24);
+
+  const primaryVerified =
+    await verifyConnectionCandidates(
+      primaryCandidates,
+      mbArtist
+    );
+
+  distribute(primaryVerified);
+
+  /* ========================================
+     SECOND PASS — 12 MORE CANDIDATES
+  ======================================== */
+
+  if (!allColumnsFull()) {
+    const additionalCandidates =
+      candidates.slice(24, 36);
+
+    if (additionalCandidates.length) {
+      const additionalVerified =
+        await verifyConnectionCandidates(
+          additionalCandidates,
+          mbArtist
+        );
+
+      distribute(additionalVerified);
     }
   }
 
-  // Fill earlier column.
-  for (const candidate of filtered) {
-    if (result.past.length >= 3) break;
+  /* ========================================
+     FINAL RESULT
+  ======================================== */
 
-    if (
-      sourceYear &&
-      candidate.year &&
-      candidate.year > sourceYear
-    ) {
-      continue;
-    }
-
-    add("past", candidate.name);
-  }
-
-  // Fill contemporary column.
-  for (const candidate of filtered) {
-    if (result.present.length >= 3) break;
-
-    add("present", candidate.name);
-  }
-
-  // Fill later column.
-  for (const candidate of filtered) {
-    if (result.future.length >= 3) break;
-
-    if (
-      sourceYear &&
-      candidate.year &&
-      candidate.year < sourceYear
-    ) {
-      continue;
-    }
-
-    add("future", candidate.name);
-  }
-
-  return result;
+  return {
+    past: result.past.slice(0, 3),
+    present: result.present.slice(0, 3),
+    future: result.future.slice(0, 3)
+  };
 }
 
 /* ==========================================
-   LIVE PROFILE — OPTIMIZED
-
-   Main content and discovery connections
-   are prepared independently.
-
-   The page can display the biography
-   and albums while MusicBrainz continues
-   verifying the recommendations.
+   LIVE ARTIST PROFILE
 ========================================== */
 
 async function fetchLiveProfile(name, onPreview = null) {
@@ -1059,13 +1541,19 @@ async function fetchLiveProfile(name, onPreview = null) {
     safe(() => getTopAlbums(realName), []),
 
     mbArtist?.id
-      ? safe(() => getMusicBrainzAlbums(mbArtist.id), [])
+      ? safe(
+          () => getMusicBrainzAlbums(mbArtist.id),
+          []
+        )
       : Promise.resolve([]),
 
     safe(() => getAudioDbAlbums(realName), []),
 
     mbArtist?.id
-      ? safe(() => getMusicBrainzRelationships(mbArtist.id), [])
+      ? safe(
+          () => getMusicBrainzRelationships(mbArtist.id),
+          []
+        )
       : Promise.resolve([])
   ]);
 
@@ -1090,9 +1578,10 @@ async function fetchLiveProfile(name, onPreview = null) {
     audioAlbums
   );
 
-  // Start the full recommendation algorithm now.
-  // It runs while biography and album information
-  // are being prepared.
+  /* ========================================
+     START CONNECTION DISCOVERY
+  ======================================== */
+
   const connectionsJob = buildConnections(
     realName,
     similar,
@@ -1126,18 +1615,23 @@ async function fetchLiveProfile(name, onPreview = null) {
     name: realName,
     genre,
     bio,
+
     image:
       audioArtist?.strArtistThumb ||
       audioArtist?.strArtistFanart ||
       null,
+
     albums,
+
     past: [],
     present: [],
     future: []
   };
 
-  // Display the finished biography and albums
-  // without waiting for all 24 artist checks.
+  /* ========================================
+     DISPLAY BIOGRAPHY AND ALBUMS FIRST
+  ======================================== */
+
   if (typeof onPreview === "function") {
     onPreview(baseProfile);
   }
@@ -1152,22 +1646,14 @@ async function fetchLiveProfile(name, onPreview = null) {
 
 /* ==========================================
    COMPLETE PROFILE CACHE
-
-   This is separate from individual API
-   response caching.
-
-   Revisit an artist:
-   - No new discovery calculations
-   - No new album selection
-   - No repeated biography assembly
-
-   Cache lasts 30 minutes per page session.
 ========================================== */
 
 function getCachedProfile(key) {
   const entry = profileCache.get(key);
 
-  if (!entry) return null;
+  if (!entry) {
+    return null;
+  }
 
   if (entry.expires <= Date.now()) {
     profileCache.delete(key);
@@ -1181,7 +1667,7 @@ async function getLiveProfile(
   name,
   onPreview = null
 ) {
-  const key = normalize(name);
+  const key = exactArtistName(name);
 
   const existing = getCachedProfile(key);
 
@@ -1201,12 +1687,13 @@ async function getLiveProfile(
           expires: Date.now() + PROFILE_CACHE_MS
         });
 
-        // Reuse the result under the canonical
-        // artist name as well.
-        profileCache.set(normalize(profile.name), {
-          profile,
-          expires: Date.now() + PROFILE_CACHE_MS
-        });
+        profileCache.set(
+          exactArtistName(profile.name),
+          {
+            profile,
+            expires: Date.now() + PROFILE_CACHE_MS
+          }
+        );
       }
 
       return profile;
@@ -1221,7 +1708,7 @@ async function getLiveProfile(
 }
 
 /* ==========================================
-   DEEZER ARTWORK LOOKUP
+   DEEZER JSONP REQUESTS
 ========================================== */
 
 function deezer(url) {
@@ -1234,23 +1721,32 @@ function deezer(url) {
     let finished = false;
 
     const timer = setTimeout(() => {
-      finish(new Error("Artwork lookup timed out"));
+      finish(
+        new Error("Artwork lookup timed out")
+      );
     }, 6500);
 
     function finish(error, data) {
-      if (finished) return;
+      if (finished) {
+        return;
+      }
 
       finished = true;
 
       clearTimeout(timer);
       script.remove();
+
       delete window[callback];
 
-      if (error) reject(error);
-      else resolve(data);
+      if (error) {
+        reject(error);
+      } else {
+        resolve(data);
+      }
     }
 
-    window[callback] = data => finish(null, data);
+    window[callback] = data =>
+      finish(null, data);
 
     script.onerror = () =>
       finish(new Error("Artwork unavailable"));
@@ -1263,9 +1759,13 @@ function deezer(url) {
   });
 }
 
+/* ==========================================
+   ARTIST PHOTOGRAPH LOOKUP
+========================================== */
+
 function findArtistPhoto(name) {
   return cached(
-    `portrait:${normalize(name)}`,
+    `portrait:${exactArtistName(name)}`,
     async () => {
       const data = await deezer(
         "https://api.deezer.com/search/artist" +
@@ -1274,11 +1774,12 @@ function findArtistPhoto(name) {
 
       const artists = (data.data || [])
         .filter(item =>
-          normalize(item.name) === normalize(name)
+          artistNamesMatch(item.name, name)
         )
         .sort(
           (a, b) =>
-            (b.nb_fan || 0) - (a.nb_fan || 0)
+            (b.nb_fan || 0) -
+            (a.nb_fan || 0)
         );
 
       return (
@@ -1290,53 +1791,42 @@ function findArtistPhoto(name) {
   );
 }
 
-function findAlbumCover(artist, album) {
+/* ==========================================
+   COVER ART ARCHIVE
+========================================== */
+
+async function findCoverArtArchive(mbid) {
+  if (!mbid) {
+    return null;
+  }
+
   return cached(
-    `cover:${normalize(artist)}:${normalize(album)}`,
+    `coverarchive:${mbid}`,
     async () => {
-      const query = encodeURIComponent(
-        `${artist} ${album}`
+      const url =
+        "https://coverartarchive.org/release-group/" +
+        encodeURIComponent(mbid);
+
+      const data = await requestJSON(
+        url,
+        {},
+        7000
       );
 
-      const data = await safe(() =>
-        requestJSON(
-          "https://itunes.apple.com/search" +
-          `?term=${query}&entity=album&limit=100`,
-          {},
-          7000
-        )
-      );
+      const images = data.images || [];
 
-      const match = (data?.results || []).find(item =>
-        normalize(item.artistName) === normalize(artist) &&
-        normalize(item.collectionName)
-          .startsWith(normalize(album))
-      );
+      const front =
+        images.find(item => item.front) ||
+        images[0];
 
-      if (match?.artworkUrl100) {
-        return match.artworkUrl100.replace(
-          /100x100(?:bb)?/,
-          "600x600bb"
-        );
+      if (!front) {
+        return null;
       }
 
-      const deezerData = await safe(() =>
-        deezer(
-          "https://api.deezer.com/search/album" +
-          `?q=${query}&limit=100`
-        )
-      );
-
-      const deezerMatch = (
-        deezerData?.data || []
-      ).find(item =>
-        normalize(item.artist?.name) === normalize(artist) &&
-        normalize(item.title).startsWith(normalize(album))
-      );
-
       return (
-        deezerMatch?.cover_xl ||
-        deezerMatch?.cover_big ||
+        front.thumbnails?.large ||
+        front.thumbnails?.["500"] ||
+        front.image ||
         null
       );
     }
@@ -1344,16 +1834,160 @@ function findAlbumCover(artist, album) {
 }
 
 /* ==========================================
-   IMAGE LOADING — OPTIMIZED
+   ITUNES ALBUM ARTWORK
+========================================== */
 
-   Validated images are cached.
+async function findItunesAlbumCover(
+  artist,
+  album
+) {
+  const query = encodeURIComponent(
+    `${artist} ${album}`
+  );
 
-   A URL is no longer validated twice
-   during the same loading operation.
+  const data = await requestJSON(
+    "https://itunes.apple.com/search" +
+    `?term=${query}&entity=album&limit=100`,
+    {},
+    7000
+  );
+
+  const match = (data.results || []).find(item =>
+    artistNamesMatch(item.artistName, artist) &&
+    normalizeAlbum(item.collectionName) ===
+    normalizeAlbum(album)
+  );
+
+  if (!match?.artworkUrl100) {
+    return null;
+  }
+
+  return match.artworkUrl100.replace(
+    /100x100(?:bb)?/,
+    "600x600bb"
+  );
+}
+
+/* ==========================================
+   DEEZER ALBUM ARTWORK
+========================================== */
+
+async function findDeezerAlbumCover(
+  artist,
+  album
+) {
+  const query = encodeURIComponent(
+    `${artist} ${album}`
+  );
+
+  const data = await deezer(
+    "https://api.deezer.com/search/album" +
+    `?q=${query}&limit=100`
+  );
+
+  const match = (data.data || []).find(item =>
+    artistNamesMatch(
+      item.artist?.name,
+      artist
+    ) &&
+    normalizeAlbum(item.title) === normalizeAlbum(album)
+  );
+
+  return (
+    match?.cover_xl ||
+    match?.cover_big ||
+    null
+  );
+}
+
+/* ==========================================
+   COLLECT ALBUM COVER CANDIDATES
+
+   Look up artwork sources concurrently
+   instead of waiting for each service
+   before contacting the next.
+========================================== */
+
+async function findAlbumCoverCandidates(
+  artist,
+  album,
+  mbid = null
+) {
+  const key =
+    `covers:${exactArtistName(artist)}:` +
+    `${normalize(album)}:${mbid || ""}`;
+
+  return cached(key, async () => {
+    const [archive, itunes, deezerCover] =
+      await Promise.all([
+        mbid
+          ? safe(
+              () => findCoverArtArchive(mbid)
+            )
+          : Promise.resolve(null),
+
+        safe(
+          () => findItunesAlbumCover(
+            artist,
+            album
+          )
+        ),
+
+        safe(
+          () => findDeezerAlbumCover(
+            artist,
+            album
+          )
+        )
+      ]);
+
+    return [
+      ...new Set(
+        [
+          archive,
+          itunes,
+          deezerCover
+        ].filter(Boolean)
+      )
+    ];
+  });
+}
+
+/* ==========================================
+   FIND FIRST AVAILABLE ALBUM COVER
+
+   Verify images before displaying them.
+========================================== */
+
+async function findAlbumCover(
+  artist,
+  album,
+  mbid = null
+) {
+  const candidates =
+    await findAlbumCoverCandidates(
+      artist,
+      album,
+      mbid
+    );
+
+  for (const url of candidates) {
+    if (await verifyImage(url)) {
+      return url;
+    }
+  }
+
+  return null;
+}
+
+/* ==========================================
+   IMAGE LOADING
 ========================================== */
 
 function verifyImage(url) {
-  if (!url) return Promise.resolve(false);
+  if (!url) {
+    return Promise.resolve(false);
+  }
 
   if (imageCache.has(url)) {
     return imageCache.get(url);
@@ -1370,7 +2004,9 @@ function verifyImage(url) {
     );
 
     function finish(success) {
-      if (finished) return;
+      if (finished) {
+        return;
+      }
 
       finished = true;
       clearTimeout(timer);
@@ -1381,7 +2017,8 @@ function verifyImage(url) {
     image.onload = () =>
       finish(image.naturalWidth > 0);
 
-    image.onerror = () => finish(false);
+    image.onerror = () =>
+      finish(false);
 
     image.src = url;
   });
@@ -1390,6 +2027,16 @@ function verifyImage(url) {
 
   return job;
 }
+
+/* ==========================================
+   LOAD IMAGE
+
+   Display preferred artwork immediately
+   when available.
+
+   Only search alternative sources if
+   the preferred image cannot be loaded.
+========================================== */
 
 function loadImage(
   image,
@@ -1403,26 +2050,62 @@ function loadImage(
   image.removeAttribute("src");
 
   (async () => {
-    let url = preferred;
+    const stillCurrent = () =>
+      version === renderVersion &&
+      image.isConnected;
 
-    if (!url || !(await verifyImage(url))) {
-      url = await safe(lookup);
+    async function display(url) {
+      if (!url) {
+        return false;
+      }
+
+      if (!(await verifyImage(url))) {
+        return false;
+      }
+
+      if (!stillCurrent()) {
+        return true;
+      }
+
+      image.src = url;
+      image.hidden = false;
+      fallback.hidden = true;
+
+      return true;
     }
 
-    if (!url || !(await verifyImage(url))) {
+    if (await display(preferred)) {
       return;
     }
 
-    if (
-      version !== renderVersion ||
-      !image.isConnected
-    ) {
+    const alternatives = await safe(
+      lookup,
+      null
+    );
+
+    if (!stillCurrent()) {
       return;
     }
 
-    image.src = url;
-    image.hidden = false;
-    fallback.hidden = true;
+    const candidates = Array.isArray(alternatives)
+      ? alternatives
+      : alternatives
+        ? [alternatives]
+        : [];
+
+    const seen = new Set();
+
+    for (const url of candidates) {
+      if (!url || seen.has(url)) {
+        continue;
+      }
+
+      seen.add(url);
+
+      if (await display(url)) {
+        return;
+      }
+    }
   })();
 }
 
@@ -1433,11 +2116,22 @@ function loadImage(
 function renderAlbums(profile, version) {
   const root = $("#albums");
 
+  if (!root) {
+    return;
+  }
+
   root.replaceChildren();
 
   for (const album of profile.albums || []) {
-    const card = makeElement("article", "album");
-    const artwork = makeElement("div", "album-art");
+    const card = makeElement(
+      "article",
+      "album"
+    );
+
+    const artwork = makeElement(
+      "div",
+      "album-art"
+    );
 
     const fallback = makeElement(
       "span",
@@ -1472,14 +2166,23 @@ function renderAlbums(profile, version) {
       album.why || ""
     );
 
-    card.append(artwork, title, description);
+    card.append(
+      artwork,
+      title,
+      description
+    );
+
     root.append(card);
 
     loadImage(
       image,
       fallback,
       album.image,
-      () => findAlbumCover(profile.name, album.title),
+      () => findAlbumCoverCandidates(
+        profile.name,
+        album.title,
+        album.mbid
+      ),
       version
     );
   }
@@ -1488,19 +2191,27 @@ function renderAlbums(profile, version) {
 /* ==========================================
    RENDER CONNECTIONS
 
-   Clean, clickable names only.
-   No description API requests.
+   Sentence-case headings.
+
+   Display order:
+   1. Their musical world.
+   2. What shaped them.
+   3. Where the sound went next.
 ========================================== */
 
 function renderConnections(profile, version) {
   const root = $("#connections-grid");
 
+  if (!root) {
+    return;
+  }
+
   root.replaceChildren();
 
   const columns = [
-    ["past", "What Shaped Them"],
-    ["present", "Their Musical World"],
-    ["future", "Where the Sound Went Next"]
+    ["past", "Influences"],
+    ["present", "Similar artists"],
+    ["future", "Next generation"]
   ];
 
   for (const [key, title] of columns) {
@@ -1516,7 +2227,11 @@ function renderConnections(profile, version) {
     );
 
     heading.append(
-      makeElement("span", "blue-dot", ".")
+      makeElement(
+        "span",
+        "blue-dot",
+        "."
+      )
     );
 
     group.append(heading);
@@ -1556,6 +2271,10 @@ function renderConnections(profile, version) {
 function renderTrail() {
   const root = $("#discovery-trail");
 
+  if (!root) {
+    return;
+  }
+
   root.replaceChildren();
 
   trail.forEach((entry, index) => {
@@ -1584,10 +2303,17 @@ function renderTrail() {
       );
     }
 
-    button.addEventListener("click", () => {
-      trail = trail.slice(0, index + 1);
-      render(entry.key);
-    });
+    button.addEventListener(
+      "click",
+      () => {
+        trail = trail.slice(
+          0,
+          index + 1
+        );
+
+        render(entry.key);
+      }
+    );
 
     root.append(button);
   });
@@ -1597,12 +2323,6 @@ function renderTrail() {
 
 /* ==========================================
    SHOW PROFILE
-
-   Optional preview mode:
-   Biography and albums appear first.
-   Connections follow when verified.
-
-   No change to recommendation selection.
 ========================================== */
 
 function showProfile(
@@ -1611,7 +2331,9 @@ function showProfile(
   version,
   preview = false
 ) {
-  if (version !== renderVersion) return;
+  if (version !== renderVersion) {
+    return;
+  }
 
   const name =
     profile.name ||
@@ -1622,54 +2344,73 @@ function showProfile(
     trail[trail.length - 1].name = name;
   }
 
-  $("#artist-name").textContent = name;
+  const nameElement = $("#artist-name");
+  const genreElement = $("#artist-genre");
+  const bioElement = $("#artist-bio");
 
-  $("#artist-genre").textContent =
-    profile.genre || "ARTIST DISCOVERY";
+  if (nameElement) {
+    nameElement.textContent = name;
+  }
 
-  $("#artist-bio").textContent =
-    profile.bio || "";
+  if (genreElement) {
+    genreElement.textContent =
+      profile.genre || "ARTIST DISCOVERY";
+  }
+
+  renderBiography(profile.bio || "");
+
+  /* ========================================
+     PORTRAIT LOADING
+  ======================================== */
 
   const portrait = $("#artist-photo");
+  const portraitFallback =
+    $("#portrait-fallback");
 
-  portrait.alt = `${name} portrait`;
+  if (portrait && portraitFallback) {
+    portrait.alt = `${name} portrait`;
 
-  // Avoid restarting the artwork search when
-  // only the connection columns are updated.
-  if (!preview) {
-    if (portrait.dataset.artistKey !== normalize(name)) {
-      portrait.dataset.artistKey = normalize(name);
+    const artistKey =
+      exactArtistName(name);
+
+    if (
+      preview ||
+      portrait.dataset.artistKey !== artistKey
+    ) {
+      portrait.dataset.artistKey = artistKey;
 
       loadImage(
         portrait,
-        $("#portrait-fallback"),
+        portraitFallback,
         profile.image,
         () => findArtistPhoto(name),
         version
       );
     }
-  } else {
-    portrait.dataset.artistKey = normalize(name);
-
-    loadImage(
-      portrait,
-      $("#portrait-fallback"),
-      profile.image,
-      () => findArtistPhoto(name),
-      version
-    );
   }
+
+  /* ========================================
+     ALBUMS AND CONNECTIONS
+  ======================================== */
+
+  const albumsRoot = $("#albums");
+  const connectionsRoot =
+    $("#connections-grid");
 
   if (preview) {
     renderAlbums(profile, version);
-    $("#connections-grid").replaceChildren();
+
+    if (connectionsRoot) {
+      connectionsRoot.replaceChildren();
+    }
   } else {
-    // The preview already displayed the albums.
-    // Don't recreate them unless this is a
-    // direct full-profile render.
     if (
-      !$("#albums").children.length ||
-      $("#albums").dataset.artistKey !== normalize(name)
+      albumsRoot &&
+      (
+        !albumsRoot.children.length ||
+        albumsRoot.dataset.artistKey !==
+          exactArtistName(name)
+      )
     ) {
       renderAlbums(profile, version);
     }
@@ -1677,11 +2418,15 @@ function showProfile(
     renderConnections(profile, version);
   }
 
-  $("#albums").dataset.artistKey = normalize(name);
+  if (albumsRoot) {
+    albumsRoot.dataset.artistKey =
+      exactArtistName(name);
+  }
 
   renderTrail();
 
-  document.title = `${name} — The Music Atlas`;
+  document.title =
+    `${name} — The Music Atlas`;
 }
 
 /* ==========================================
@@ -1689,38 +2434,48 @@ function showProfile(
 ========================================== */
 
 function initializeRipple() {
-  loadingScreen = document.createElement("div");
+  const existing = $("#loading-screen");
 
-  loadingScreen.className = "loading-screen";
-  loadingScreen.id = "loading-screen";
-
-  loadingScreen.setAttribute("role", "status");
-  loadingScreen.setAttribute(
-    "aria-label",
-    "Loading artist information"
-  );
-
-  loadingScreen.hidden = true;
-
-  loadingScreen.innerHTML = `
-    <div class="water-ripple" aria-hidden="true">
-      <span class="ripple-ring"></span>
-      <span class="ripple-ring"></span>
-      <span class="ripple-ring"></span>
-      <span class="ripple-ring"></span>
-      <span class="ripple-center"></span>
-    </div>
-  `;
-
-  const header = $(".site-header");
-
-  if (header) {
-    header.insertAdjacentElement(
-      "afterend",
-      loadingScreen
-    );
+  if (existing) {
+    loadingScreen = existing;
   } else {
-    document.body.prepend(loadingScreen);
+    loadingScreen = document.createElement("div");
+
+    loadingScreen.className = "loading-screen";
+    loadingScreen.id = "loading-screen";
+
+    loadingScreen.setAttribute(
+      "role",
+      "status"
+    );
+
+    loadingScreen.setAttribute(
+      "aria-label",
+      "Loading artist information"
+    );
+
+    loadingScreen.hidden = true;
+
+    loadingScreen.innerHTML = `
+      <div class="water-ripple" aria-hidden="true">
+        <span class="ripple-ring"></span>
+        <span class="ripple-ring"></span>
+        <span class="ripple-ring"></span>
+        <span class="ripple-ring"></span>
+        <span class="ripple-center"></span>
+      </div>
+    `;
+
+    const header = $(".site-header");
+
+    if (header) {
+      header.insertAdjacentElement(
+        "afterend",
+        loadingScreen
+      );
+    } else {
+      document.body.prepend(loadingScreen);
+    }
   }
 
   window.addEventListener(
@@ -1730,7 +2485,9 @@ function initializeRipple() {
 }
 
 function positionRipple() {
-  if (!loadingScreen) return;
+  if (!loadingScreen) {
+    return;
+  }
 
   const header = $(".site-header");
 
@@ -1743,7 +2500,9 @@ function positionRipple() {
 }
 
 function showRipple() {
-  if (!loadingScreen) return;
+  if (!loadingScreen) {
+    return;
+  }
 
   if (
     window.matchMedia(
@@ -1755,44 +2514,51 @@ function showRipple() {
 
   positionRipple();
 
-  loadingScreen.classList.remove("is-fading");
+  loadingScreen.classList.remove(
+    "is-fading"
+  );
+
   loadingScreen.hidden = false;
 
   loadingScreen
     .querySelectorAll(".ripple-ring")
     .forEach(ring => {
       ring.style.animation = "none";
+
       void ring.offsetWidth;
+
       ring.style.animation = "";
     });
 }
 
 async function hideRipple(version) {
-  if (!loadingScreen) return;
-  if (version !== rippleVersion) return;
+  if (!loadingScreen) {
+    return;
+  }
 
-  loadingScreen.classList.add("is-fading");
+  if (version !== rippleVersion) {
+    return;
+  }
+
+  loadingScreen.classList.add(
+    "is-fading"
+  );
 
   await pause(600);
 
-  if (version !== rippleVersion) return;
+  if (version !== rippleVersion) {
+    return;
+  }
 
   loadingScreen.hidden = true;
-  loadingScreen.classList.remove("is-fading");
+
+  loadingScreen.classList.remove(
+    "is-fading"
+  );
 }
 
 /* ==========================================
-   LOAD ARTIST — OPTIMIZED
-
-   Cached profiles display immediately.
-
-   New artists:
-   1. Resolve artist information.
-   2. Display biography and albums.
-   3. Finish full recommendation checks.
-   4. Display verified connections.
-
-   No candidate checks are skipped.
+   LOAD ARTIST
 ========================================== */
 
 async function render(key) {
@@ -1800,65 +2566,130 @@ async function render(key) {
   const transition = ++rippleVersion;
   const started = Date.now();
 
-  const url = new URL(window.location.href);
+  const currentName =
+    trail[trail.length - 1]?.name ||
+    key.replace(/-/g, " ");
 
-  url.searchParams.set("artist", key);
+  /* ========================================
+     PRESERVE EXACT ARTIST NAME IN URL
+  ======================================== */
+
+  const url = new URL(
+    window.location.href
+  );
+
+  url.searchParams.set(
+    "artist",
+    currentName
+  );
 
   history.replaceState(
-    { artist: key },
+    { artist: currentName },
     "",
     url
   );
 
-  // Clear old artist identity so image loading
-  // is not accidentally reused for a new page.
-  const portrait = $("#artist-photo");
-  portrait.dataset.artistKey = "";
+  /* ========================================
+     CLEAR PREVIOUS ARTIST STATE
+  ======================================== */
 
-  $("#albums").dataset.artistKey = "";
+  const portrait = $("#artist-photo");
+  const albumsRoot = $("#albums");
+
+  if (portrait) {
+    portrait.dataset.artistKey = "";
+  }
+
+  if (albumsRoot) {
+    albumsRoot.dataset.artistKey = "";
+  }
 
   showRipple();
 
   try {
-    const curated = curatedProfile(key);
+   
+    /* ==========================================
+   CURATED ARTISTS — UNIFIED EXPERIENCE
+========================================== */
 
-    if (curated) {
-      showProfile(key, curated, version);
-      return;
-    }
+const curated = curatedProfile(key);
+
+if (curated) {
+  const live = await safe(
+    () => getLiveProfile(curated.name)
+  );
+
+  if (version !== renderVersion) {
+    return;
+  }
+
+  const liveAlbums = live?.albums || [];
+
+  const unified = {
+    ...curated,
+
+    
+    bio: live?.bio || curated.bio,
+
+    image: live?.image || curated.image,
+
+    albums: curated.albums.map(album => {
+      const match = liveAlbums.find(
+        item =>
+          normalize(item.title) ===
+          normalize(album.title)
+      );
+
+      return {
+        ...album,
+        image: match?.image || album.image,
+        mbid: match?.mbid || album.mbid
+      };
+    }),
+
+    // Keep the curated connections.
+    past: curated.past,
+    present: curated.present,
+    future: curated.future
+  };
+
+  showProfile(
+    key,
+    unified,
+    version
+  );
+
+  return;
+}
+
+    /* ======================================
+       LIVE PROFILE
+    ====================================== */
 
     const name =
       trail[trail.length - 1]?.name ||
       key.replace(/-/g, " ");
 
-    // Complete profile cache is checked first.
-    const existing = getCachedProfile(normalize(name));
+    const existing = getCachedProfile(
+      exactArtistName(name)
+    );
 
     if (existing) {
-      showProfile(key, existing, version);
+      showProfile(
+        key,
+        existing,
+        version
+      );
+
       return;
     }
-
-    $("#artist-name").textContent = name;
-    $("#artist-genre").textContent = "DISCOVERING";
-    $("#artist-bio").textContent = "";
-
-    portrait.hidden = true;
-    $("#portrait-fallback").hidden = false;
-
-    $("#albums").replaceChildren();
-    $("#connections-grid").replaceChildren();
-
-    renderTrail();
-
-    let previewDisplayed = false;
 
     const profile = await getLiveProfile(
       name,
       preview => {
-        if (version !== renderVersion) return;
-
-        previewDisplayed = true;
+        if (version !== renderVersion) {
+          return;
+        }
 
         showProfile(
           key,
@@ -1869,47 +2700,74 @@ async function render(key) {
       }
     );
 
-    if (version !== renderVersion) return;
+    if (version !== renderVersion) {
+      return;
+    }
 
     if (!profile) {
-      $("#artist-genre").textContent =
-        "ARTIST SEARCH";
-
-      $("#artist-bio").textContent =
-        "We couldn't find reliable information for that artist. Try another spelling.";
+      showProfile(
+        key,
+        {
+          name,
+          genre: "ARTIST DISCOVERY",
+          bio:
+            "We couldn't find reliable information " +
+            "for this artist. Try another search.",
+          image: null,
+          albums: [],
+          past: [],
+          present: [],
+          future: []
+        },
+        version
+      );
 
       return;
     }
 
-    if (previewDisplayed) {
-      // Albums and portrait are already visible.
-      // Only add the fully verified connections.
-      renderConnections(profile, version);
-      renderTrail();
-    } else {
-      showProfile(key, profile, version);
-    }
+    showProfile(
+      key,
+      profile,
+      version
+    );
 
   } catch (error) {
-    if (version !== renderVersion) return;
-
     console.error(
-      "Music Atlas discovery error:",
+      "Music Atlas profile error:",
       error
     );
 
-    $("#artist-genre").textContent =
-      "ARTIST SEARCH";
-
-    $("#artist-bio").textContent =
-      "The music services are temporarily unavailable. Please try again.";
+    if (version === renderVersion) {
+      showProfile(
+        key,
+        {
+          name: currentName,
+          genre: "ARTIST DISCOVERY",
+          bio:
+            "Artist information is temporarily " +
+            "unavailable. Please try again.",
+          image: null,
+          albums: [],
+          past: [],
+          present: [],
+          future: []
+        },
+        version
+      );
+    }
 
   } finally {
-    if (transition === rippleVersion) {
-      const elapsed = Date.now() - started;
+    if (version === renderVersion) {
+      const elapsed =
+        Date.now() - started;
 
-      if (elapsed < 700) {
-        await pause(700 - elapsed);
+      const remaining = Math.max(
+        0,
+        450 - elapsed
+      );
+
+      if (remaining) {
+        await pause(remaining);
       }
 
       await hideRipple(transition);
@@ -1918,57 +2776,86 @@ async function render(key) {
 }
 
 /* ==========================================
-   NAVIGATION
+   NAVIGATE TO ARTIST
 ========================================== */
 
-function navigate(key, name) {
-  if (!key) return;
+function navigate(key, name = "") {
+  const artistName =
+    String(name || key.replace(/-/g, " "))
+      .trim();
+
+  if (!artistName) {
+    return;
+  }
+
+  const artistKey = slug(artistName);
+
+  const current =
+    trail[trail.length - 1];
+
+  if (
+    current &&
+    artistNamesMatch(
+      current.name,
+      artistName
+    )
+  ) {
+    return;
+  }
 
   trail.push({
-    key,
-    name:
-      name ||
-      PROFILES[key]?.name ||
-      key
+    key: artistKey,
+    name: artistName
   });
 
-  render(key);
+  render(artistKey);
 }
 
 /* ==========================================
-   SEARCH
+   ARTIST SEARCH
 ========================================== */
 
-$("#discovery-search").addEventListener(
-  "submit",
-  event => {
-    event.preventDefault();
+const searchForm = $("#discovery-search");
+const searchInput = $("#artist-search");
 
-    const input = $("#artist-search");
-    const query = input.value.trim();
+if (searchForm && searchInput) {
+  searchForm.addEventListener(
+    "submit",
+    event => {
+      event.preventDefault();
 
-    if (!query) return;
+      const name =
+        searchInput.value.trim();
 
-    trail = [];
+      if (!name) {
+        return;
+      }
 
-    navigate(slug(query), query);
+      navigate(
+        slug(name),
+        name
+      );
 
-    input.value = "";
-    input.blur();
-  }
-);
+      searchInput.value = "";
+    }
+  );
+}
 
 /* ==========================================
    START OVER
 ========================================== */
 
-$("#reset-trail").addEventListener(
-  "click",
-  () => {
-    window.location.href = "index.html";
-  }
-);
+const resetButton = $("#reset-trail");
 
+if (resetButton) {
+  resetButton.addEventListener(
+    "click",
+    () => {
+      window.location.href =
+        "index.html";
+    }
+  );
+}
 
 /* ==========================================
    INITIALIZE
@@ -1976,9 +2863,15 @@ $("#reset-trail").addEventListener(
 
 initializeRipple();
 
-const requested =
-  new URLSearchParams(
-    window.location.search
-  ).get("artist") || "David Bowie";
+const params = new URLSearchParams(
+  window.location.search
+);
 
-navigate(slug(requested), requested);
+const requested =
+  params.get("artist")?.trim() ||
+  "David Bowie";
+
+navigate(
+  slug(requested),
+  requested
+);
