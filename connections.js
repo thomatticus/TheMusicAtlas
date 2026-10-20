@@ -234,26 +234,62 @@ function shortBiography(text, maxWords = 65) {
 ========================================== */
 
 
+
 function renderBiography(text) {
   const bio = document.querySelector("#artist-bio");
   if (!bio) return;
 
+  const full = cleanText(text);
+  const short = shortBiography(full, 45);
+  const mobile = window.matchMedia("(max-width: 600px)");
+
   document.querySelector("#bio-toggle")?.remove();
 
-  bio.textContent = cleanText(text);
-  bio.scrollTop = 0;
+  if (!mobile.matches) {
+    // Desktop: full biography with existing scrollbar.
+    bio.textContent = full;
+    bio.scrollTop = 0;
+    bio.tabIndex = 0;
+    bio.setAttribute("role", "region");
+    bio.setAttribute("aria-label", "Artist biography");
+  } else {
+    // Mobile: short biography with Read more.
+    bio.textContent = short;
+    bio.removeAttribute("tabindex");
+    bio.removeAttribute("role");
+    bio.removeAttribute("aria-label");
 
-  bio.tabIndex = 0;
-  bio.setAttribute("role", "region");
-  bio.setAttribute("aria-label", "Artist biography");
+    if (short && short !== full) {
+      const button = document.createElement("button");
+      button.id = "bio-toggle";
+      button.className = "bio-toggle";
+      button.type = "button";
+      button.textContent = "Read more";
+      button.setAttribute("aria-expanded", "false");
 
-  bio.classList.remove("has-more");
-  bio.onscroll = null;
+      bio.insertAdjacentElement("afterend", button);
 
-  if (bio._resizeObserver) {
-    bio._resizeObserver.disconnect();
-    bio._resizeObserver = null;
+      let expanded = false;
+
+      button.addEventListener("click", () => {
+        expanded = !expanded;
+        bio.textContent = expanded ? full : short;
+        button.textContent = expanded ? "Show less" : "Read more";
+        button.setAttribute("aria-expanded", String(expanded));
+      });
+    }
   }
+
+  // Handle switching between mobile and desktop widths.
+  if (!bio._mobileBiographyQuery) {
+    bio._mobileBiographyQuery = mobile;
+
+    mobile.addEventListener("change", () => {
+      renderBiography(bio._fullBiography || "");
+    });
+  }
+
+  bio._fullBiography = full;
 }
 
 
