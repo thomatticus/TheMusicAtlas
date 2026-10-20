@@ -1198,3 +1198,26 @@ body {
   }
 
 }
+
+/* ========================================
+   BIOGRAPHY — STABLE PAGE LAYOUT
+========================================= */
+
+@media (min-width: 901px) {
+
+  .discovery-layout {
+    align-items: start;
+  }
+
+  .artist-intro {
+    min-height: 0;
+  }
+
+  #artist-bio {
+    max-height: 160px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+
+}
