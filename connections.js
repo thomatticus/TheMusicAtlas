@@ -233,61 +233,29 @@ function shortBiography(text, maxWords = 65) {
    BIOGRAPHY EXPAND / COLLAPSE
 ========================================== */
 
+
 function renderBiography(text) {
   const bio = document.querySelector("#artist-bio");
-
   if (!bio) return;
 
-  const full = cleanText(text);
-  const short = shortBiography(full, 65);
+  document.querySelector("#bio-toggle")?.remove();
 
-  const oldButton =
-    document.querySelector("#bio-toggle");
+  bio.textContent = cleanText(text);
+  bio.scrollTop = 0;
 
-  if (oldButton) oldButton.remove();
+  bio.tabIndex = 0;
+  bio.setAttribute("role", "region");
+  bio.setAttribute("aria-label", "Artist biography");
 
-  bio.textContent = short;
+  bio.classList.remove("has-more");
+  bio.onscroll = null;
 
-  if (!full || short === full) {
-    return;
+  if (bio._resizeObserver) {
+    bio._resizeObserver.disconnect();
+    bio._resizeObserver = null;
   }
-
-  const button = document.createElement("button");
-
-  button.id = "bio-toggle";
-  button.className = "bio-toggle";
-  button.type = "button";
-  button.textContent = "Read more";
-
-  button.setAttribute(
-    "aria-expanded",
-    "false"
-  );
-
-  bio.insertAdjacentElement(
-    "afterend",
-    button
-  );
-
-  let expanded = false;
-
-  button.addEventListener("click", () => {
-    expanded = !expanded;
-
-    bio.textContent = expanded
-      ? full
-      : short;
-
-    button.textContent = expanded
-      ? "Show less"
-      : "Read more";
-
-    button.setAttribute(
-      "aria-expanded",
-      String(expanded)
-    );
-  });
 }
+
 
 function usefulText(text, minimum = 45) {
   const value = cleanText(text);

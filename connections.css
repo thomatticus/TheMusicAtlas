@@ -1,1223 +1,3117 @@
+
 /* ==========================================
-   THE MUSIC ATLAS
-   CONNECTIONS.CSS
+
+
+  THE MUSIC ATLAS
+
+
+  CONNECTIONS.CSS
+
+
 ========================================== */
+
 
 :root {
-  --color-background: #f7f5f0;
-  --color-surface: #ffffff;
-  --color-search-background: #edeae4;
-  --color-text: #292522;
-  --color-text-muted: #625f5a;
-  --color-placeholder: #8a8279;
-  --color-accent: #287fa0;
-  --color-icon: #756e67;
-  --color-border: #e8e3da;
-  --color-border-focus: #cbbdb2;
-  --color-ripple: #648b9b;
-  --color-ripple-center: #729baa;
+
+
+ --color-background: #f7f5f0;
+
+
+ --color-surface: #ffffff;
+
+
+ --color-search-background: #edeae4;
+
+
+ --color-text: #292522;
+
+
+ --color-text-muted: #625f5a;
+
+
+ --color-placeholder: #8a8279;
+
+
+ --color-accent: #287fa0;
+
+
+ --color-icon: #756e67;
+
+
+ --color-border: #e8e3da;
+
+
+ --color-border-focus: #cbbdb2;
+
+
+ --color-ripple: #648b9b;
+
+
+ --color-ripple-center: #729baa;
+
+
 }
 
+
 /* ==========================================
-   GLOBAL — ORIGINAL HOMEPAGE RULES
+
+
+  GLOBAL — ORIGINAL HOMEPAGE RULES
+
+
 ========================================== */
+
 
 *,
+
+
 *::before,
+
+
 *::after {
-  box-sizing: border-box;
+
+
+ box-sizing: border-box;
+
+
 }
+
 
 html {
-  scroll-behavior: smooth;
+
+
+ scroll-behavior: smooth;
+
+
 }
+
 
 body {
-  margin: 0;
-  background: var(--color-background);
-  color: var(--color-text);
-  font-family: Helvetica, Arial, sans-serif;
+
+
+ margin: 0;
+
+
+ background: var(--color-background);
+
+
+ color: var(--color-text);
+
+
+ font-family: Helvetica, Arial, sans-serif;
+
+
 }
+
 
 [hidden] {
-  display: none !important;
+
+
+ display: none !important;
+
+
 }
 
+
 /* ==========================================
-   NAVIGATION — ORIGINAL HOMEPAGE RULES
+
+
+  NAVIGATION — ORIGINAL HOMEPAGE RULES
+
+
 ========================================== */
+
 
 .site-header {
-  flex-shrink: 0;
-  background: var(--color-background);
-  border-bottom: 1px solid var(--color-border);
+
+
+ flex-shrink: 0;
+
+
+ background: var(--color-background);
+
+
+ border-bottom: 1px solid var(--color-border);
+
+
 }
+
 
 .navigation {
-  width: min(1400px, calc(100% - 64px));
-  min-height: 94px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
+
+
+ width: min(1400px, calc(100% - 64px));
+
+
+ min-height: 94px;
+
+
+ margin: 0 auto;
+
+
+ display: flex;
+
+
+ align-items: center;
+
+
+ justify-content: space-between;
+
+
+ gap: 24px;
+
+
 }
+
 
 .brand {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-  color: var(--color-text);
-  text-decoration: none;
-  white-space: nowrap;
+
+
+ font-size: 18px;
+
+
+ font-weight: 700;
+
+
+ letter-spacing: -0.5px;
+
+
+ color: var(--color-text);
+
+
+ text-decoration: none;
+
+
+ white-space: nowrap;
+
+
 }
+
 
 .brand span {
-  color: var(--color-accent);
+
+
+ color: var(--color-accent);
+
+
 }
 
+
 /* ==========================================
-   SEARCH — ORIGINAL HOMEPAGE RULES
-   NO EXTRA ARROW STYLING
+
+
+  SEARCH — ORIGINAL HOMEPAGE RULES
+
+
+  NO EXTRA ARROW STYLING
+
+
 ========================================== */
+
 
 .search-group {
-  width: 250px;
-  flex-shrink: 0;
+
+
+ width: 250px;
+
+
+ flex-shrink: 0;
+
+
 }
+
 
 .nav-search {
-  width: 100%;
-  height: 42px;
-  padding: 0 13px;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  background: var(--color-search-background);
-  border: 1px solid transparent;
-  border-radius: 999px;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
+
+
+ width: 100%;
+
+
+ height: 42px;
+
+
+ padding: 0 13px;
+
+
+ display: flex;
+
+
+ align-items: center;
+
+
+ gap: 9px;
+
+
+ background: var(--color-search-background);
+
+
+ border: 1px solid transparent;
+
+
+ border-radius: 999px;
+
+
+ transition:
+
+
+background 0.2s ease,
+
+
+   border-color 0.2s ease;
+
+
 }
+
 
 .nav-search:focus-within {
-  background: var(--color-surface);
-  border-color: var(--color-border-focus);
+
+
+ background: var(--color-surface);
+
+
+ border-color: var(--color-border-focus);
+
+
 }
+
 
 .search-icon {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-  fill: none;
-  stroke: var(--color-icon);
-  stroke-width: 1.8;
-  stroke-linecap: round;
+
+
+ width: 16px;
+
+
+ height: 16px;
+
+
+ flex-shrink: 0;
+
+
+ fill: none;
+
+
+ stroke: var(--color-icon);
+
+
+ stroke-width: 1.8;
+
+
+ stroke-linecap: round;
+
+
 }
+
 
 .nav-search input {
-  flex: 1;
-  min-width: 0;
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--color-text);
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 12px;
+
+
+ flex: 1;
+
+
+ min-width: 0;
+
+
+ background: transparent;
+
+
+ border: none;
+
+
+ outline: none;
+
+
+ color: var(--color-text);
+
+
+ font-family: Helvetica, Arial, sans-serif;
+
+
+ font-size: 12px;
+
+
 }
+
 
 .nav-search input::placeholder {
-  color: var(--color-placeholder);
+
+
+ color: var(--color-placeholder);
+
+
 }
+
 
 .nav-search button {
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--color-icon);
-  font-size: 17px;
-  cursor: pointer;
+
+
+ padding: 0;
+
+
+ border: none;
+
+
+ background: transparent;
+
+
+ color: var(--color-icon);
+
+
+ font-size: 17px;
+
+
+ cursor: pointer;
+
+
 }
+
 
 .nav-search button:hover {
-  color: var(--color-accent);
+
+
+ color: var(--color-accent);
+
+
 }
+
 
 .search-caption {
-  display: block;
-  margin-top: 8px;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  text-align: center;
-  color: var(--color-text-muted);
+
+
+ display: block;
+
+
+ margin-top: 8px;
+
+
+ font-size: 10px;
+
+
+ font-weight: 500;
+
+
+ letter-spacing: 0.8px;
+
+
+ text-transform: uppercase;
+
+
+ text-align: center;
+
+
+ color: var(--color-text-muted);
+
+
 }
+
 
 .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+
+
+ position: absolute;
+
+
+ width: 1px;
+
+
+ height: 1px;
+
+
+ padding: 0;
+
+
+ margin: -1px;
+
+
+ overflow: hidden;
+
+
+ clip: rect(0, 0, 0, 0);
+
+
+ white-space: nowrap;
+
+
+ border: 0;
+
+
 }
 
+
 /* ==========================================
-   DISCOVERY — SINGLE SCREEN
+
+
+  DISCOVERY — SINGLE SCREEN
+
+
 ========================================== */
+
 
 .discovery {
-  width: min(1400px, calc(100% - 64px));
-  min-height: calc(100dvh - 95px);
-  margin: 0 auto;
 
-  display: flex;
-  flex-direction: column;
+
+ width: min(1400px, calc(100% - 64px));
+
+
+ min-height: calc(100dvh - 95px);
+
+
+ margin: 0 auto;
+
+
+ display: flex;
+
+
+ flex-direction: column;
+
+
 }
+
 
 .discovery-layout {
-  flex: 1;
-  min-height: 0;
 
-  display: grid;
-  grid-template-columns:
-    minmax(290px, 315px)
-    minmax(0, 1fr);
 
-  column-gap: clamp(48px, 5vw, 76px);
+ flex: 1;
 
-  padding: 28px 0 24px;
+
+ min-height: 0;
+
+
+ display: grid;
+
+
+ grid-template-columns:
+
+
+   minmax(290px, 315px)
+
+
+   minmax(0, 1fr);
+
+
+ column-gap: clamp(48px, 5vw, 76px);
+
+
+ padding: 28px 0 24px;
+
+
 }
+
 
 .artist-intro,
+
+
 .discovery-content {
-  min-width: 0;
+
+
+ min-width: 0;
+
+
 }
 
+
 /* ==========================================
-   ARTIST PORTRAIT
+
+
+  ARTIST PORTRAIT
+
+
 ========================================== */
+
 
 .artist-intro {
-  display: flex;
-  flex-direction: column;
+
+
+ display: flex;
+
+
+ flex-direction: column;
+
+
 }
+
 
 .portrait-frame {
-  position: relative;
 
-  width: 100%;
-  max-width: 315px;
-  aspect-ratio: 1 / 1;
 
-  overflow: hidden;
-  background: #e8e4dc;
+ position: relative;
+
+
+ width: 100%;
+
+
+ max-width: 315px;
+
+
+ aspect-ratio: 1 / 1;
+
+
+ overflow: hidden;
+
+
+ background: #e8e4dc;
+
+
 }
+
 
 .portrait-frame img {
-  position: absolute;
-  inset: 0;
 
-  display: block;
-  width: 100%;
-  height: 100%;
 
-  object-fit: cover;
-  object-position: center;
+ position: absolute;
+
+
+ inset: 0;
+
+
+ display: block;
+
+
+ width: 100%;
+
+
+ height: 100%;
+
+
+ object-fit: cover;
+
+
+ object-position: center;
+
+
 }
+
 
 .portrait-fallback {
-  position: absolute;
-  inset: 0;
 
-  display: grid;
-  place-content: center;
 
-  color: #aaa49d;
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: -1.5px;
-  line-height: 1.15;
-  text-align: center;
+ position: absolute;
+
+
+ inset: 0;
+
+
+ display: grid;
+
+
+ place-content: center;
+
+
+ color: #aaa49d;
+
+
+ font-size: 32px;
+
+
+ font-weight: 700;
+
+
+ letter-spacing: -1.5px;
+
+
+ line-height: 1.15;
+
+
+ text-align: center;
+
+
 }
+
 
 .portrait-fallback span {
-  color: var(--color-accent);
+
+
+ color: var(--color-accent);
+
+
 }
 
+
 /* ==========================================
-   ARTIST INFORMATION
+
+
+  ARTIST INFORMATION
+
+
 ========================================== */
+
 
 .artist-copy {
-  min-width: 0;
+
+
+ min-width: 0;
+
+
 }
+
 
 .eyebrow {
-  margin: 0;
 
-  color: #88817a;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  line-height: 1.4;
+
+ margin: 0;
+
+
+ color: #88817a;
+
+
+ font-size: 10px;
+
+
+ font-weight: 700;
+
+
+ letter-spacing: 1.5px;
+
+
+ line-height: 1.4;
+
+
 }
+
 
 .artist-copy > .eyebrow {
-  margin-top: 22px;
+
+
+ margin-top: 22px;
+
+
 }
+
 
 #artist-name {
-  margin: 9px 0 8px;
 
-  font-size: clamp(40px, 3.7vw, 54px);
-  font-weight: 400;
-  letter-spacing: -1.8px;
-  line-height: 1.06;
+
+ margin: 9px 0 8px;
+
+
+ font-size: clamp(40px, 3.7vw, 54px);
+
+
+ font-weight: 400;
+
+
+ letter-spacing: -1.8px;
+
+
+ line-height: 1.06;
+
+
 }
+
 
 .artist-era {
-  margin: 0;
-  color: #8c857d;
-  font-size: 12px;
+
+
+ margin: 0;
+
+
+ color: #8c857d;
+
+
+ font-size: 12px;
+
+
 }
+
 
 .artist-bio {
-  max-width: 315px;
-  margin: 23px 0 0;
 
-  font-size: 13px;
-  line-height: 1.65;
+
+ max-width: 315px;
+
+
+ margin: 23px 0 0;
+
+
+ font-size: 13px;
+
+
+ line-height: 1.65;
+
+
 }
 
+
 /* ==========================================
-   RIGHT SIDE
-   USE THE AVAILABLE HEIGHT
+
+
+  RIGHT SIDE
+
+
+  USE THE AVAILABLE HEIGHT
+
+
 ========================================== */
+
 
 .discovery-content {
-  min-height: 0;
 
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
 
-  gap: 38px;
+ min-height: 0;
+
+
+ display: flex;
+
+
+ flex-direction: column;
+
+
+ justify-content: space-between;
+
+
+ gap: 38px;
+
+
 }
 
+
 /* ==========================================
-   SECTION HEADINGS
+
+
+  SECTION HEADINGS
+
+
 ========================================== */
+
 
 .section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 
-  margin-bottom: 24px;
+
+ display: flex;
+
+
+ align-items: center;
+
+
+ justify-content: space-between;
+
+
+ margin-bottom: 24px;
+
+
 }
+
 
 .section-header h2 {
-  margin: 0;
 
-  font-size: clamp(24px, 2.2vw, 30px);
-  font-weight: 400;
-  letter-spacing: -0.9px;
-  line-height: 1.15;
+
+ margin: 0;
+
+
+ font-size: clamp(24px, 2.2vw, 30px);
+
+
+ font-weight: 400;
+
+
+ letter-spacing: -0.9px;
+
+
+ line-height: 1.15;
+
+
 }
+
 
 .blue-dot {
-  color: var(--color-accent);
+
+
+ color: var(--color-accent);
+
+
 }
 
+
 /* ==========================================
-   ESSENTIAL ALBUMS
+
+
+  ESSENTIAL ALBUMS
+
+
 ========================================== */
+
 
 .albums-section {
-  width: 100%;
+
+
+ width: 100%;
+
+
 }
+
 
 .albums-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(20px, 2.3vw, 34px);
+
+
+ display: grid;
+
+
+ grid-template-columns: repeat(3, minmax(0, 1fr));
+
+
+ gap: clamp(20px, 2.3vw, 34px);
+
+
 }
+
 
 .album {
-  min-width: 0;
+
+
+ min-width: 0;
+
+
 }
+
 
 .album-art {
-  position: relative;
 
-  width: 100%;
-  max-width: 225px;
-  aspect-ratio: 1 / 1;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+ position: relative;
 
-  overflow: hidden;
-  background: #e8e4dc;
+
+ width: 100%;
+
+
+ max-width: 225px;
+
+
+ aspect-ratio: 1 / 1;
+
+
+ display: flex;
+
+
+ align-items: center;
+
+
+ justify-content: center;
+
+
+ overflow: hidden;
+
+
+ background: #e8e4dc;
+
+
 }
+
 
 .album-art img {
-  position: absolute;
-  inset: 0;
 
-  display: block;
-  width: 100%;
-  height: 100%;
 
-  object-fit: cover;
+ position: absolute;
+
+
+ inset: 0;
+
+
+ display: block;
+
+
+ width: 100%;
+
+
+ height: 100%;
+
+
+ object-fit: cover;
+
+
 }
+
 
 .album-fallback {
-  padding: 12px;
-  color: #9b948d;
-  font-size: 12px;
-  text-align: center;
+
+
+ padding: 12px;
+
+
+ color: #9b948d;
+
+
+ font-size: 12px;
+
+
+ text-align: center;
+
+
 }
+
 
 .album-title {
-  margin: 12px 0 4px;
 
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.4;
+
+ margin: 12px 0 4px;
+
+
+ font-size: 13px;
+
+
+ font-weight: 700;
+
+
+ line-height: 1.4;
+
+
 }
+
 
 .album-year {
-  color: var(--color-accent);
-  font-size: 11px;
-  font-weight: 600;
+
+
+ color: var(--color-accent);
+
+
+ font-size: 11px;
+
+
+ font-weight: 600;
+
+
 }
+
 
 .album-description {
-  margin: 0;
 
-  color: #88817a;
-  font-size: 11px;
-  line-height: 1.5;
+
+ margin: 0;
+
+
+ color: #88817a;
+
+
+ font-size: 11px;
+
+
+ line-height: 1.5;
+
+
 }
 
+
 /* ==========================================
-   FOLLOW THE SOUND
+
+
+  FOLLOW THE SOUND
+
+
 ========================================== */
+
 
 .connections-section {
-  width: 100%;
 
-  border-top: 1px solid var(--color-border);
-  padding-top: 24px;
+
+ width: 100%;
+
+
+ border-top: 1px solid var(--color-border);
+
+
+ padding-top: 24px;
+
+
 }
+
 
 .connections-section .section-header {
-  margin-bottom: 32px;
+
+
+ margin-bottom: 32px;
+
+
 }
+
 
 .connections-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(20px, 2.3vw, 34px);
+
+
+ display: grid;
+
+
+ grid-template-columns: repeat(3, minmax(0, 1fr));
+
+
+ gap: clamp(20px, 2.3vw, 34px);
+
+
 }
+
 
 .connection-group {
-  min-width: 0;
+
+
+ min-width: 0;
+
+
 }
+
 
 .group-title {
-  min-height: 44px;
-  margin: 0 0 12px;
 
-  font-size: 17px;
-  font-weight: 500;
-  letter-spacing: -0.35px;
-  line-height: 1.3;
+
+ min-height: 44px;
+
+
+ margin: 0 0 12px;
+
+
+ font-size: 17px;
+
+
+ font-weight: 500;
+
+
+ letter-spacing: -0.35px;
+
+
+ line-height: 1.3;
+
+
 }
 
+
 /* ==========================================
-   CONNECTION ENTRIES
+
+
+  CONNECTION ENTRIES
+
+
 ========================================== */
+
 
 .connection {
-  display: block;
-  width: 100%;
 
-  padding: 13px 0;
 
-  border: 0;
-  border-top: 1px solid var(--color-border);
-  background: transparent;
+ display: block;
 
-  color: inherit;
-  font-family: Helvetica, Arial, sans-serif;
-  text-align: left;
-  cursor: pointer;
+
+ width: 100%;
+
+
+ padding: 13px 0;
+
+
+ border: 0;
+
+
+ border-top: 1px solid var(--color-border);
+
+
+ background: transparent;
+
+
+ color: inherit;
+
+
+ font-family: Helvetica, Arial, sans-serif;
+
+
+ text-align: left;
+
+
+ cursor: pointer;
+
+
 }
+
 
 .connection-name {
-  display: block;
 
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.35;
+
+ display: block;
+
+
+ font-size: 13px;
+
+
+ font-weight: 700;
+
+
+ line-height: 1.35;
+
+
 }
+
 
 .connection-reason {
-  display: block;
-  margin-top: 6px;
 
-  color: #8a837c;
-  font-size: 11px;
-  line-height: 1.5;
+
+ display: block;
+
+
+ margin-top: 6px;
+
+
+ color: #8a837c;
+
+
+ font-size: 11px;
+
+
+ line-height: 1.5;
+
+
 }
+
 
 .connection:hover .connection-name,
+
+
 .trail-step:hover,
+
+
 .reset-trail:hover {
-  color: var(--color-accent);
+
+
+ color: var(--color-accent);
+
+
 }
+
 
 .empty-connections {
-  color: #918a83;
-  font-size: 12px;
-  line-height: 1.5;
+
+
+ color: #918a83;
+
+
+ font-size: 12px;
+
+
+ line-height: 1.5;
+
+
 }
 
+
 /* ==========================================
-   DISCOVERY TRAIL
+
+
+  DISCOVERY TRAIL
+
+
 ========================================== */
+
 
 .discovery-footer {
-  min-height: 54px;
-  flex-shrink: 0;
 
-  display: flex;
-  align-items: center;
-  gap: 20px;
 
-  border-top: 1px solid var(--color-border);
-  padding: 12px 0;
+ min-height: 54px;
+
+
+ flex-shrink: 0;
+
+
+ display: flex;
+
+
+ align-items: center;
+
+
+ gap: 20px;
+
+
+ border-top: 1px solid var(--color-border);
+
+
+ padding: 12px 0;
+
+
 }
+
 
 .discovery-footer > .eyebrow {
-  white-space: nowrap;
+
+
+ white-space: nowrap;
+
+
 }
+
 
 .discovery-trail {
-  min-width: 0;
-  flex: 1;
 
-  display: flex;
-  align-items: center;
-  gap: 10px;
 
-  overflow-x: auto;
-  scrollbar-width: thin;
+ min-width: 0;
+
+
+ flex: 1;
+
+
+ display: flex;
+
+
+ align-items: center;
+
+
+ gap: 10px;
+
+
+ overflow-x: auto;
+
+
+ scrollbar-width: thin;
+
+
 }
+
 
 .trail-step,
-.reset-trail {
-  padding: 0;
-  border: 0;
-  background: transparent;
 
-  color: #88817a;
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 11px;
-  cursor: pointer;
-  white-space: nowrap;
+
+.reset-trail {
+
+
+ padding: 0;
+
+
+ border: 0;
+
+
+ background: transparent;
+
+
+ color: #88817a;
+
+
+ font-family: Helvetica, Arial, sans-serif;
+
+
+ font-size: 11px;
+
+
+ cursor: pointer;
+
+
+ white-space: nowrap;
+
+
 }
+
 
 .trail-step[aria-current="page"] {
-  color: var(--color-text);
-  font-weight: 700;
+
+
+ color: var(--color-text);
+
+
+ font-weight: 700;
+
+
 }
+
 
 .trail-separator {
-  color: #b3aca4;
+
+
+ color: #b3aca4;
+
+
 }
+
 
 .connection:focus-visible,
+
+
 .trail-step:focus-visible,
+
+
 .reset-trail:focus-visible,
+
+
 a:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 4px;
+
+
+ outline: 2px solid var(--color-accent);
+
+
+ outline-offset: 4px;
+
+
 }
 
-/* ==========================================
-   DESKTOP HEIGHT MANAGEMENT
 
-   Keep the artwork large on normal desktops.
-   On genuinely short windows, allow scrolling
-   instead of cutting off artist connections.
+/* ==========================================
+
+
+  DESKTOP HEIGHT MANAGEMENT
+
+
+  Keep the artwork large on normal desktops.
+
+
+  On genuinely short windows, allow scrolling
+
+
+  instead of cutting off artist connections.
+
+
 ========================================== */
+
 
 @media (min-width: 901px) and (min-height: 850px) {
-  .discovery {
-    height: calc(100dvh - 95px);
-  }
+
+
+ .discovery {
+
+
+   height: calc(100dvh - 95px);
+
+
+ }
+
+
 }
+
 
 @media (min-width: 901px) and (max-height: 849px) {
-  .discovery-layout {
-    padding-top: 20px;
-    padding-bottom: 18px;
-  }
 
-  .discovery-content {
-    gap: 28px;
-  }
 
-  .connections-section {
-    padding-top: 18px;
-  }
+ .discovery-layout {
 
-  .connections-section .section-header {
-    margin-bottom: 22px;
-  }
 
-  .group-title {
-    margin-bottom: 8px;
-  }
+   padding-top: 20px;
 
-  .connection {
-    padding: 9px 0;
-  }
+
+   padding-bottom: 18px;
+
+
+ }
+
+
+ .discovery-content {
+
+
+   gap: 28px;
+
+
+ }
+
+
+ .connections-section {
+
+
+   padding-top: 18px;
+
+
+ }
+
+
+ .connections-section .section-header {
+
+
+   margin-bottom: 22px;
+
+
+ }
+
+
+ .group-title {
+
+
+   margin-bottom: 8px;
+
+
+ }
+
+
+ .connection {
+
+
+   padding: 9px 0;
+
+
+ }
+
+
 }
 
+
 /* ==========================================
-   TABLET
+
+
+  TABLET
+
+
 ========================================== */
+
 
 @media (max-width: 900px) {
-  .discovery-layout {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
 
-  .artist-intro {
-    display: grid;
-    grid-template-columns:
-      minmax(180px, 260px)
-      minmax(0, 1fr);
 
-    gap: 28px;
-    align-items: center;
-  }
+ .discovery-layout {
 
-  .portrait-frame {
-    max-width: 260px;
-  }
 
-  .artist-copy > .eyebrow {
-    margin-top: 0;
-  }
+   grid-template-columns: 1fr;
 
-  .discovery-content {
-    gap: 44px;
-  }
 
-  .album-art {
-    max-width: none;
-  }
+   gap: 40px;
+
+
+ }
+
+
+ .artist-intro {
+
+
+   display: grid;
+
+
+   grid-template-columns:
+
+
+     minmax(180px, 260px)
+
+
+     minmax(0, 1fr);
+
+
+   gap: 28px;
+
+
+   align-items: center;
+
+
+ }
+
+
+ .portrait-frame {
+
+
+   max-width: 260px;
+
+
+ }
+
+
+ .artist-copy > .eyebrow {
+
+
+   margin-top: 0;
+
+
+ }
+
+
+ .discovery-content {
+
+
+   gap: 44px;
+
+
+ }
+
+
+ .album-art {
+
+
+   max-width: none;
+
+
+ }
+
+
 }
 
+
 /* ==========================================
-   MOBILE
-   HOMEPAGE NAVIGATION VALUES PRESERVED
+
+
+  MOBILE
+
+
+  HOMEPAGE NAVIGATION VALUES PRESERVED
+
+
 ========================================== */
+
 
 @media (max-width: 600px) {
-  .navigation {
-    width: calc(100% - 36px);
-    min-height: 86px;
-    gap: 12px;
-  }
 
-  .brand {
-    font-size: 15px;
-  }
 
-  .search-group {
-    width: 180px;
-  }
+ .navigation {
 
-  .search-caption {
-    font-size: 9px;
-    letter-spacing: 0.5px;
-  }
 
-  .discovery {
-    width: calc(100% - 36px);
-  }
+   width: calc(100% - 36px);
 
-  .discovery-layout {
-    padding-top: 24px;
-  }
 
-  .artist-intro {
-    display: block;
-  }
+   min-height: 86px;
 
-  .portrait-frame {
-    width: min(100%, 315px);
-    max-width: none;
-  }
 
-  .artist-copy > .eyebrow {
-    margin-top: 20px;
-  }
+   gap: 12px;
 
-  .albums-grid,
-  .connections-grid {
-    gap: 14px;
-  }
 
-  .section-header h2 {
-    font-size: 25px;
-  }
+ }
 
-  .group-title {
-    min-height: 58px;
-    font-size: 15px;
-  }
 
-  .discovery-footer {
-    flex-wrap: wrap;
-  }
+ .brand {
+
+
+   font-size: 15px;
+
+
+ }
+
+
+ .search-group {
+
+
+   width: 180px;
+
+
+ }
+
+
+ .search-caption {
+
+
+   font-size: 9px;
+
+
+   letter-spacing: 0.5px;
+
+
+ }
+
+
+ .discovery {
+
+
+   width: calc(100% - 36px);
+
+
+ }
+
+
+ .discovery-layout {
+
+
+   padding-top: 24px;
+
+
+ }
+
+
+ .artist-intro {
+
+
+   display: block;
+
+
+ }
+
+
+ .portrait-frame {
+
+
+   width: min(100%, 315px);
+
+
+   max-width: none;
+
+
+ }
+
+
+ .artist-copy > .eyebrow {
+
+
+   margin-top: 20px;
+
+
+ }
+
+
+ .albums-grid,
+
+
+ .connections-grid {
+
+
+   gap: 14px;
+
+
+ }
+
+
+ .section-header h2 {
+
+
+   font-size: 25px;
+
+
+ }
+
+
+ .group-title {
+
+
+   min-height: 58px;
+
+
+   font-size: 15px;
+
+
+ }
+
+
+ .discovery-footer {
+
+
+   flex-wrap: wrap;
+
+
+ }
+
+
 }
 
+
 /* ==========================================
-   SMALL MOBILE
+
+
+  SMALL MOBILE
+
+
 ========================================== */
+
 
 @media (max-width: 380px) {
-  .navigation {
-    flex-wrap: wrap;
-    padding: 18px 0;
-  }
 
-  .search-group {
-    width: 100%;
-  }
 
-  .albums-grid {
-    gap: 9px;
-  }
+ .navigation {
 
-  .connections-grid {
-    grid-template-columns: 1fr;
-    gap: 22px;
-  }
 
-  .group-title {
-    min-height: 0;
-  }
+   flex-wrap: wrap;
+
+
+   padding: 18px 0;
+
+
+ }
+
+
+ .search-group {
+
+
+   width: 100%;
+
+
+ }
+
+
+ .albums-grid {
+
+
+   gap: 9px;
+
+
+ }
+
+
+ .connections-grid {
+
+
+   grid-template-columns: 1fr;
+
+
+   gap: 22px;
+
+
+ }
+
+
+ .group-title {
+
+
+   min-height: 0;
+
+
+ }
+
+
 }
 
+
 /* ==========================================
-   REDUCED MOTION
+
+
+  REDUCED MOTION
+
+
 ========================================== */
+
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
 
-  .nav-search {
-    transition: none;
-  }
+
+ html {
+
+
+   scroll-behavior: auto;
+
+
+ }
+
+
+ .nav-search {
+
+
+   transition: none;
+
+
+ }
+
+
 }
+
 
 /* ==========================================
-   WATER RIPPLE
-   Discovery page loading transition
+
+
+  WATER RIPPLE
+
+
+  Discovery page loading transition
+
+
 ========================================== */
 
+
 .loading-screen {
-  position: fixed;
-  inset: 94px 0 0;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
-  background: #f7f5f0;
+ position: fixed;
 
-  z-index: 100;
 
-  opacity: 1;
-  transition: opacity 0.6s ease;
+ inset: 94px 0 0;
+
+
+ display: flex;
+
+
+ align-items: center;
+
+
+ justify-content: center;
+
+
+ background: #f7f5f0;
+
+
+ z-index: 100;
+
+
+ opacity: 1;
+
+
+ transition: opacity 0.6s ease;
+
+
 }
+
 
 .loading-screen.is-fading {
-  opacity: 0;
-  pointer-events: none;
+
+
+ opacity: 0;
+
+
+ pointer-events: none;
+
+
 }
+
 
 /* ORIGINAL HOMEPAGE RIPPLE */
 
+
 .water-ripple {
-  position: relative;
 
-  width: 150px;
-  height: 150px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+ position: relative;
 
-  isolation: isolate;
+
+ width: 150px;
+
+
+ height: 150px;
+
+
+ display: flex;
+
+
+ align-items: center;
+
+
+ justify-content: center;
+
+
+ isolation: isolate;
+
+
 }
+
 
 .ripple-ring {
-  position: absolute;
 
-  width: 22px;
-  height: 22px;
 
-  border: 1.2px solid #648b9b;
-  border-radius: 50%;
+ position: absolute;
 
-  opacity: 0;
-  transform: scale(0.7);
 
-  animation: gentle-ripple 7.5s
-    cubic-bezier(0.22, 0.42, 0.36, 1)
-    infinite;
+ width: 22px;
+
+
+ height: 22px;
+
+
+ border: 1.2px solid #648b9b;
+
+
+ border-radius: 50%;
+
+
+ opacity: 0;
+
+
+ transform: scale(0.7);
+
+
+ animation: gentle-ripple 7.5s
+
+
+   cubic-bezier(0.22, 0.42, 0.36, 1)
+
+
+   infinite;
+
+
 }
+
 
 .ripple-ring:nth-child(2) {
-  animation-delay: -1.875s;
+
+
+ animation-delay: -1.875s;
+
+
 }
+
 
 .ripple-ring:nth-child(3) {
-  animation-delay: -3.75s;
+
+
+ animation-delay: -3.75s;
+
+
 }
+
 
 .ripple-ring:nth-child(4) {
-  animation-delay: -5.625s;
+
+
+ animation-delay: -5.625s;
+
+
 }
+
 
 .ripple-center {
-  position: absolute;
 
-  width: 4px;
-  height: 4px;
 
-  border-radius: 50%;
+ position: absolute;
 
-  background: #729baa;
-  opacity: 0.5;
+
+ width: 4px;
+
+
+ height: 4px;
+
+
+ border-radius: 50%;
+
+
+ background: #729baa;
+
+
+ opacity: 0.5;
+
+
 }
+
 
 @keyframes gentle-ripple {
-  0% {
-    transform: scale(0.65);
-    opacity: 0;
-  }
 
-  12% {
-    opacity: 0.55;
-  }
 
-  48% {
-    opacity: 0.35;
-  }
+ 0% {
 
-  78% {
-    opacity: 0.12;
-  }
 
-  100% {
-    transform: scale(6.5);
-    opacity: 0;
-  }
+   transform: scale(0.65);
+
+
+   opacity: 0;
+
+
+ }
+
+
+ 12% {
+
+
+   opacity: 0.55;
+
+
+ }
+
+
+ 48% {
+
+
+   opacity: 0.35;
+
+
+ }
+
+
+ 78% {
+
+
+   opacity: 0.12;
+
+
+ }
+
+
+ 100% {
+
+
+   transform: scale(6.5);
+
+
+   opacity: 0;
+
+
+ }
+
+
 }
+
 
 /* MOBILE HEADER */
 
+
 @media (max-width: 600px) {
-  .loading-screen {
-    top: 86px;
-  }
+
+
+ .loading-screen {
+
+
+   top: 86px;
+
+
+ }
+
+
 }
+
 
 /* ACCESSIBILITY */
 
+
 @media (prefers-reduced-motion: reduce) {
-  .loading-screen {
-    transition: none;
-  }
 
-  .ripple-ring {
-    animation: none;
-    transform: scale(3);
-    opacity: 0.16;
-  }
+
+ .loading-screen {
+
+
+   transition: none;
+
+
+ }
+
+
+ .ripple-ring {
+
+
+   animation: none;
+
+
+   transform: scale(3);
+
+
+   opacity: 0.16;
+
+
+ }
+
+
 }
-
 
 
 /* ==========================================
-   MOBILE REFINEMENTS
+
+
+  MOBILE REFINEMENTS
+
+
 ========================================== */
+
 
 @media (max-width: 600px) {
 
-  /* More comfortable header layout */
 
-  .navigation {
-    flex-wrap: wrap;
-    padding: 18px 0;
-  }
+ /* More comfortable header layout */
 
-  .search-group {
-    width: 100%;
-  }
 
-  /* Two readable album columns */
+ .navigation {
 
-  .albums-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px 16px;
-  }
 
-  /* Connections stack vertically */
+   flex-wrap: wrap;
 
-  .connections-grid {
-    grid-template-columns: 1fr;
-    gap: 28px;
-  }
 
-  .group-title {
-    min-height: 0;
-    margin-bottom: 10px;
-  }
+   padding: 18px 0;
 
-  /* Comfortable spacing between sections */
 
-  .discovery-content {
-    gap: 48px;
-  }
+ }
 
-  /* Keep artist names readable */
 
-  .connection {
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-  }
+ .search-group {
 
-  .connection-name {
-    font-size: 14px;
-  }
+
+   width: 100%;
+
+
+ }
+
+
+ /* Two readable album columns */
+
+
+ .albums-grid {
+
+
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+
+
+   gap: 24px 16px;
+
+
+ }
+
+
+ /* Connections stack vertically */
+
+
+ .connections-grid {
+
+
+   grid-template-columns: 1fr;
+
+
+   gap: 28px;
+
+
+ }
+
+
+ .group-title {
+
+
+   min-height: 0;
+
+
+   margin-bottom: 10px;
+
+
+ }
+
+
+ /* Comfortable spacing between sections */
+
+
+ .discovery-content {
+
+
+   gap: 48px;
+
+
+ }
+
+
+ /* Keep artist names readable */
+
+
+ .connection {
+
+
+   min-height: 44px;
+
+
+   display: flex;
+
+
+   align-items: center;
+
+
+ }
+
+
+ .connection-name {
+
+
+   font-size: 14px;
+
+
+ }
+
 
 }
 
+
 /* ========================================
-   ARTIST BIOGRAPHY
+
+
+  ARTIST BIOGRAPHY
+
+
 ========================================= */
+
 
 #artist-bio {
-  line-height: 1.75;
-  overflow-wrap: break-word;
+
+
+ line-height: 1.75;
+
+
+ overflow-wrap: break-word;
+
+
 }
 
+
 /* ========================================
-   READ MORE / SHOW LESS
+
+
+  READ MORE / SHOW LESS
+
+
 ========================================= */
 
+
 .bio-toggle {
-  display: inline-flex;
-  align-items: center;
 
-  margin-top: 12px;
-  padding: 0 0 4px;
 
-  border: none;
-  border-bottom: 1px solid transparent;
+ display: inline-flex;
 
-  background: transparent;
 
-  color: #287fa0;
+ align-items: center;
 
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 12px;
-  font-weight: 500;
 
-  cursor: pointer;
+ margin-top: 12px;
 
-  transition:
-    color 180ms ease,
-    border-color 180ms ease;
+
+ padding: 0 0 4px;
+
+
+ border: none;
+
+
+ border-bottom: 1px solid transparent;
+
+
+ background: transparent;
+
+
+ color: #287fa0;
+
+
+ font-family: Helvetica, Arial, sans-serif;
+
+
+ font-size: 12px;
+
+
+ font-weight: 500;
+
+
+ cursor: pointer;
+
+
+ transition:
+
+
+   color 180ms ease,
+
+
+   border-color 180ms ease;
+
+
 }
+
 
 .bio-toggle:hover {
-  color: #292522;
-  border-bottom-color: currentColor;
+
+
+ color: #292522;
+
+
+ border-bottom-color: currentColor;
+
+
 }
+
 
 .bio-toggle:focus-visible {
-  outline: 2px solid #287fa0;
-  outline-offset: 4px;
+
+
+ outline: 2px solid #287fa0;
+
+
+ outline-offset: 4px;
+
+
 }
+
 
 /* ========================================
-   THE MUSIC ATLAS — THEME TOGGLE
+
+
+  THE MUSIC ATLAS — THEME TOGGLE
+
+
 ======================================== */
 
+
 :root {
-  --theme-bg: #f7f5f0;
-  --theme-text: #292522;
-  --theme-muted: #706b65;
-  --theme-border: #e8e3da;
-  --theme-surface: #ffffff;
+
+
+ --theme-bg: #f7f5f0;
+
+
+ --theme-text: #292522;
+
+
+ --theme-muted: #706b65;
+
+
+ --theme-border: #e8e3da;
+
+
+ --theme-surface: #ffffff;
+
+
 }
+
 
 :root[data-theme="dark"] {
-  --theme-bg: #17191b;
-  --theme-text: #f1eee8;
-  --theme-muted: #a5a7a8;
-  --theme-border: #383b3d;
-  --theme-surface: #222528;
+
+
+ --theme-bg: #17191b;
+
+
+ --theme-text: #f1eee8;
+
+
+ --theme-muted: #a5a7a8;
+
+
+ --theme-border: #383b3d;
+
+
+ --theme-surface: #222528;
+
+
 }
 
+
 body {
-  background-color: var(--theme-bg);
-  color: var(--theme-text);
-  transition: background-color 0.25s ease, color 0.25s ease;
+
+
+ background-color: var(--theme-bg);
+
+
+ color: var(--theme-text);
+
+
+ transition: background-color 0.25s ease, color 0.25s ease;
+
+
 }
 
 
 .theme-toggle:focus-visible {
-  outline: 2px solid #287fa0;
-  outline-offset: 3px;
+
+
+ outline: 2px solid #287fa0;
+
+
+ outline-offset: 3px;
+
+
 }
 
+
 .theme-icon {
-  font-size: 21px;
-  line-height: 1;
-  font-weight: 400;
+
+
+ font-size: 21px;
+
+
+ line-height: 1;
+
+
+ font-weight: 400;
+
+
 }
+
 
 @media (prefers-reduced-motion: reduce) {
-  body {
-    transition: none;
-  }
+
+
+ body {
+
+
+   transition: none;
+
+
+ }
+
+
 }
 
+
 /* ========================================
-   THE MUSIC ATLAS — THEME BUTTON
+
+
+  THE MUSIC ATLAS — THEME BUTTON
+
+
 ======================================== */
+
 
 .navigation {
-  position: relative;
+
+
+ position: relative;
+
+
 }
+
 
 .theme-toggle {
-  position: absolute;
-  top: 22px;
-  right: 310px;
-  transform: none;
 
-  width: 34px;
-  height: 34px;
 
-  display: grid;
-  place-items: center;
+ position: absolute;
 
-  padding: 0;
-  border: none;
-  border-radius: 50%;
 
-  background: transparent;
-  color: #292522;
+ top: 22px;
 
-  cursor: pointer;
-  z-index: 10;
+
+ right: 310px;
+
+
+ transform: none;
+
+
+ width: 34px;
+
+
+ height: 34px;
+
+
+ display: grid;
+
+
+ place-items: center;
+
+
+ padding: 0;
+
+
+ border: none;
+
+
+ border-radius: 50%;
+
+
+ background: transparent;
+
+
+ color: #292522;
+
+
+ cursor: pointer;
+
+
+ z-index: 10;
+
+
 }
+
 
 .theme-toggle:hover {
-  background: rgba(41, 37, 34, 0.07);
+
+
+ background: rgba(41, 37, 34, 0.07);
+
+
 }
 
+
 :root[data-theme="dark"] .theme-toggle {
-  color: #f1eee8;
-  background: #292d30;
+
+
+ color: #f1eee8;
+
+
+ background: #292d30;
+
+
 }
+
 
 :root[data-theme="dark"] .theme-toggle:hover {
-  background: #383e42;
+
+
+ background: #383e42;
+
+
 }
+
 
 .theme-icon {
-  font-size: 21px;
-  line-height: 1;
+
+
+ font-size: 21px;
+
+
+ line-height: 1;
+
+
 }
 
+
 /* ========================================
-   DARK MODE — DISCOVERY TRAIL
+
+
+  DARK MODE — DISCOVERY TRAIL
+
+
 ======================================== */
+
 
 :root[data-theme="dark"] .discovery-trail {
-  color: #a5a7a8;
+
+
+ color: #a5a7a8;
+
+
 }
+
 
 :root[data-theme="dark"] .discovery-trail a,
+
+
 :root[data-theme="dark"] .discovery-trail button,
+
+
 :root[data-theme="dark"] .discovery-trail span {
-  color: #d5d3cf;
+
+
+ color: #d5d3cf;
+
+
 }
+
 
 :root[data-theme="dark"] .discovery-trail a:hover,
+
+
 :root[data-theme="dark"] .discovery-trail button:hover {
-  color: #63a9c5;
+
+
+ color: #63a9c5;
+
+
 }
 
+
 /* ========================================
-   THE MUSIC ATLAS — THEME-AWARE LOADING
+
+
+  THE MUSIC ATLAS — THEME-AWARE LOADING
+
+
 ======================================== */
+
 
 :root[data-theme="dark"] {
-  --color-background: #17191b;
-  --color-ripple: #648b9b;
-  --color-ripple-center: #729baa;
+
+
+ --color-background: #17191b;
+
+
+ --color-ripple: #648b9b;
+
+
+ --color-ripple-center: #729baa;
+
+
 }
+
 
 :root[data-theme="dark"] .loading-screen {
-  background-color: #17191b;
+
+
+ background-color: #17191b;
+
+
 }
+
 
 :root[data-theme="dark"] .ripple-overlay {
-  background-color: #17191b;
+
+
+ background-color: #17191b;
+
+
 }
 
+
 /* ========================================
-   DARK MODE — TRANSITION COLORS
+
+
+  DARK MODE — TRANSITION COLORS
+
+
 ======================================== */
+
 
 /* Header stays warm white */
+
+
 :root[data-theme="dark"] .site-header {
-  background: #f7f5f0;
-  border-bottom: 1px solid #e8e3da;
+
+
+ background: #f7f5f0;
+
+
+ border-bottom: 1px solid #e8e3da;
+
+
 }
+
 
 /* Logo stays dark */
+
+
 :root[data-theme="dark"] .brand {
-  color: #292522;
+
+
+ color: #292522;
+
+
 }
+
 
 /* Theme button remains visible */
+
+
 :root[data-theme="dark"] .theme-toggle {
-  color: #292522;
-  background: transparent;
+
+
+ color: #292522;
+
+
+ background: transparent;
+
+
 }
 
+
 /* Loading area stays charcoal */
+
+
 :root[data-theme="dark"] .loading-screen,
+
+
 :root[data-theme="dark"] .ripple-overlay {
-  background-color: #17191b;
+
+
+ background-color: #17191b;
+
+
 }
 
 
 /* ========================================
-   THE MUSIC ATLAS — SVG THEME ICON
+
+
+  THE MUSIC ATLAS — SVG THEME ICON
+
+
 ======================================== */
 
+
 .theme-svg {
-  width: 19px;
-  height: 19px;
-  display: block;
+
+
+ width: 19px;
+
+
+ height: 19px;
+
+
+ display: block;
+
+
 }
+
 
 /* Light mode: moon */
 
+
 .sun-core,
+
+
 .sun-rays {
-  display: none;
+
+
+ display: none;
+
+
 }
 
+
 .moon-shape {
-  display: block;
+
+
+ display: block;
+
+
 }
+
 
 /* Dark mode: sun */
 
+
 :root[data-theme="dark"] .sun-core,
+
+
 :root[data-theme="dark"] .sun-rays {
-  display: block;
+
+
+ display: block;
+
+
 }
+
 
 :root[data-theme="dark"] .moon-shape {
-  display: none;
+
+
+ display: none;
+
+
 }
 
+
 /* ========================================
-   MOBILE ONLY — THEME BUTTON PLACEMENT
+
+
+  MOBILE ONLY — THEME BUTTON PLACEMENT
+
+
 ======================================== */
+
 
 @media (max-width: 600px) {
 
-  .navigation {
-    position: relative;
-    flex-wrap: wrap;
-    gap: 12px;
-    padding: 16px 0;
-  }
 
-  .brand {
-    flex: 1;
-  }
+ .navigation {
 
-  .theme-toggle {
-    position: static;
-    transform: none;
 
-    order: 2;
-    flex: 0 0 34px;
+   position: relative;
 
-    width: 34px;
-    height: 34px;
-  }
 
-  .search-group {
-    order: 3;
-    width: 100%;
-    flex-basis: 100%;
-  }
+   flex-wrap: wrap;
+
+
+   gap: 12px;
+
+
+   padding: 16px 0;
+
+
+ }
+
+
+ .brand {
+
+
+   flex: 1;
+
+
+ }
+
+
+ .theme-toggle {
+
+
+   position: static;
+
+
+   transform: none;
+
+
+   order: 2;
+
+
+   flex: 0 0 34px;
+
+
+   width: 34px;
+
+
+   height: 34px;
+
+
+ }
+
+
+ .search-group {
+
+
+   order: 3;
+
+
+   width: 100%;
+
+
+   flex-basis: 100%;
+
+
+ }
+
 
 }
 
+
 /* ========================================
-   BIOGRAPHY — STABLE PAGE LAYOUT
+
+
+  BIOGRAPHY — STABLE PAGE LAYOUT
+
+
 ========================================= */
+
 
 @media (min-width: 901px) {
 
-  .discovery-layout {
-    align-items: start;
-  }
 
-  .artist-intro {
-    min-height: 0;
-  }
+ .discovery-layout {
 
-  #artist-bio {
-    max-height: 160px;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
-  }
+
+   align-items: start;
+
+
+ }
+
+
+ .artist-intro {
+
+
+   min-height: 0;
+
+
+ }
+
+
+ #artist-bio {
+
+
+   max-height: 160px;
+
+
+   overflow-y: auto;
+
+
+   overscroll-behavior: contain;
+
+
+   scrollbar-width: thin;
+
+
+ }
+
 
 }
+
+
+/* ========================================
+
+
+  SCROLLABLE ARTIST BIOGRAPHY
+
+
+======================================== */
+
+
+@media (min-width: 901px) {
+
+
+ .discovery-layout {
+
+
+   align-items: start;
+
+
+ }
+
+
+ .artist-intro {
+
+
+   min-height: 0;
+
+
+ }
+
+
+ #artist-bio {
+
+
+   max-height: 160px;
+
+
+   overflow-y: auto;
+
+
+   overflow-x: hidden;
+
+
+   overscroll-behavior: contain;
+
+
+   scrollbar-width: none;
+
+
+   -webkit-mask-image: none;
+
+
+   mask-image: none;
+
+
+ }
+
+
+ #artist-bio::-webkit-scrollbar {
+
+
+   display: none;
+
+
+ }
+
+
+ /* Fade only when more biography remains below. */
+
+
+#artist-bio.has-more {
+
+
+ -webkit-mask-image: linear-gradient(
+
+
+   to bottom,
+
+
+   black 0%,
+
+
+   black 92%,
+
+
+   transparent 100%
+
+
+ );
+
+
+ mask-image: linear-gradient(
+
+
+   to bottom,
+
+
+   black 0%,
+
+
+   black 92%,
+
+
+   transparent 100%
+
+
+ );
+
+
+}
+
+
+ #artist-bio:focus-visible {
+
+
+   outline: 1px solid var(--color-accent);
+
+
+   outline-offset: 4px;
+
+
+ }
+
+
+}
+
+
+/* On mobile, allow the full biography to flow normally. */
+
+
+@media (max-width: 900px) {
+
+
+ #artist-bio {
+
+
+   max-height: none;
+
+
+   overflow: visible;
+
+
+   -webkit-mask-image: none !important;
+
+
+   mask-image: none !important;
+
+
+ }
+
+
+}
+
+
+/* ========================================
+
+
+  ARTIST BIOGRAPHY — CLEAN SCROLLING
+
+
+======================================== */
+
+
+@media (min-width: 901px) {
+
+
+ #artist-bio {
+
+
+   max-height: 160px;
+
+
+   overflow-y: auto;
+
+
+   overflow-x: hidden;
+
+
+   padding-right: 10px;
+
+
+   overscroll-behavior: contain;
+
+
+   scrollbar-width: thin;
+
+
+   scrollbar-color: var(--color-border) transparent;
+
+
+   -webkit-mask-image: none !important;
+
+
+   mask-image: none !important;
+
+
+ }
+
+
+ #artist-bio::-webkit-scrollbar {
+
+
+   width: 3px;
+
+
+ }
+
+
+ #artist-bio::-webkit-scrollbar-track {
+
+
+   background: transparent;
+
+
+ }
+
+
+ #artist-bio::-webkit-scrollbar-thumb {
+
+
+   background: var(--color-border);
+
+
+   border-radius: 10px;
+
+
+ }
+
+
+}
+
+
+/* ========================================
+  BIOGRAPHY — REMOVE FADE COMPLETELY
+======================================== */
+
+
+#artist-bio,
+#artist-bio.has-more {
+ -webkit-mask-image: none !important;
+ mask-image: none !important;
+
+
+ opacity: 1;
+ color: var(--theme-text);
+}
+
+
+/* ========================================
+  BIOGRAPHY — THEME COLOR TEST
+======================================== */
+
+
+#artist-bio {
+ color: #292522;
+ opacity: 1;
+ -webkit-mask-image: none !important;
+ mask-image: none !important;
+}
+
+
+:root[data-theme="dark"] #artist-bio {
+ color: #f1eee8;
+}
+
+
+
